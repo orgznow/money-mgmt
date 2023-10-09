@@ -12,9 +12,13 @@ import jakarta.persistence.Table
 import jakarta.persistence.TableGenerator
 import org.hibernate.type.TrueFalseConverter
 
+import java.text.SimpleDateFormat
+
 @Entity
 @Table(name="journal_entry")
 class JournalEntry {
+
+    public static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("MM/dd/yyyy")
 
     @TableGenerator(name="journalEntryGen", table="journal_entry_seq")
 
@@ -56,4 +60,8 @@ class JournalEntry {
     @OneToOne
     @JoinColumn(name="transaction_type_id", referencedColumnName="transaction_type_id", nullable=true)
     TransactionType theTxType
+
+    String getEntryDateString() {
+        DATE_FORMATTER.format(this.entryDate)
+    }
 }

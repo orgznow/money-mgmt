@@ -11,7 +11,7 @@ class JournalEntryService {
     @Autowired
     JournalEntryRepository journalEntryRepository
 
-    public Iterable<JournalEntry> findAll(Date entryDate) {
+    public List<JournalEntry> findAll(Date entryDate) {
         (entryDate) ? journalEntryRepository.findAllByEntryDate(entryDate) : journalEntryRepository.findAll()
     }
 

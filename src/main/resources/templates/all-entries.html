@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Journal Entries</title>
+</head>
+
+<body>
+    <div class="container">
+        <table class="table table-striped">
+            <caption th:text="${caption}" />
+            <thead>
+            <tr>
+                <th>Date</th>
+                <th>Description</th>
+                <th>Base Amt</th>
+                <th>Discount</th>
+                <th>Tax?</th>
+                <th>Final Amt</th>
+                <th>Comments</th>
+                <th>Category</th>
+                <th>Store</th>
+                <th>Tx Type</th>
+            </tr>
+            </thead>
+            <tbody>
+                <tr th:each="entry: ${entries}">
+                    <td th:text="${entry.entryDateString}"/>
+                    <td th:text="${entry.description}"/>
+                    <td th:text="${entry.baseAmount}"/>
+                    <td th:text="${entry.discountAmount}"/>
+                    <td th:text="${entry.isTaxable}"/>
+                    <td th:text="${entry.finalAmount}"/>
+                    <td th:text="${entry.comments}"/>
+                    <td th:text="${entry.theCategory?.name}"/>
+                    <td th:text="${entry.theStore?.name}"/>
+                    <td th:text="${entry.theTxType?.name}"/>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
