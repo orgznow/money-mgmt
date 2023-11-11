@@ -3,6 +3,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>Journal Entries</title>
+    <link rel="stylesheet" type="text/css" href="../css/bootstrap.css" />
 </head>
 
 <body>
@@ -21,6 +22,7 @@
                 <th>Category</th>
                 <th>Store</th>
                 <th>Tx Type</th>
+                <!--th colspan="2" class="text-center">Actions</th-->
             </tr>
             </thead>
             <tbody>
@@ -33,8 +35,14 @@
                     <td th:text="${entry.finalAmount}"/>
                     <td th:text="${entry.comments}"/>
                     <td th:text="${entry.theCategory?.name}"/>
-                    <td th:text="${entry.theStore?.name}"/>
-                    <td th:text="${entry.theTxType?.name}"/>
+                    <td th:text="${entry.theStoreVisit.theStore.name}"/>
+                    <td th:text="${entry.theStoreVisit.theTxType.name}"/>
+                    <!--td>
+                        <button type="button" class="btn btn-default">Edit</button>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-default">Delete</button>
+                    </td-->
                 </tr>
             </tbody>
         </table>

@@ -33,6 +33,12 @@ class JournalEntry {
     @Column(name="description", nullable=false, length=100)
     String description
 
+    @Column(name="rate_amount", nullable=false)
+    Double rateAmount
+
+    @Column(name="quantity", nullable=false)
+    Double quantity
+
     @Column(name="base_amount", nullable=false)
     Double baseAmount
 
@@ -43,6 +49,9 @@ class JournalEntry {
     @Convert(converter=TrueFalseConverter)
     boolean isTaxable
 
+    @Column(name="tax_amount", nullable=false)
+    Double taxAmount
+
     @Column(name="final_amount", nullable=false)
     Double finalAmount
 
@@ -50,16 +59,16 @@ class JournalEntry {
     String comments
 
     @OneToOne
-    @JoinColumn(name="category_id", referencedColumnName="category_id", nullable=true)
-    SpendCategory theCategory
+    @JoinColumn(name="establishment_visit_id", referencedColumnName="establishment_visit_id", nullable=false)
+    EstablishmentVisit establishmentVisit
 
     @OneToOne
-    @JoinColumn(name="store_id", referencedColumnName="establishment_id", nullable=true)
-    Establishment theStore
+    @JoinColumn(name="category_id", referencedColumnName="category_id", nullable=false)
+    SpendCategory spendCategory
 
     @OneToOne
-    @JoinColumn(name="transaction_type_id", referencedColumnName="transaction_type_id", nullable=true)
-    TransactionType theTxType
+    @JoinColumn(name="unit_type_id", referencedColumnName="unit_type_id", nullable=false)
+    UnitType unitType
 
     String getEntryDateString() {
         DATE_FORMATTER.format(this.entryDate)

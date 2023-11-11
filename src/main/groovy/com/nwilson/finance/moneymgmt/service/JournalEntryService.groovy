@@ -1,4 +1,4 @@
-package com.nwilson.finance.moneymgmt.services
+package com.nwilson.finance.moneymgmt.service
 
 import com.nwilson.finance.moneymgmt.dao.JournalEntryRepository
 import com.nwilson.finance.moneymgmt.entity.JournalEntry
@@ -15,7 +15,7 @@ class JournalEntryService {
         (entryDate) ? journalEntryRepository.findAllByEntryDate(entryDate) : journalEntryRepository.findAll()
     }
 
-    public JournalEntry addEntry(JournalEntry entry) {
-        journalEntryRepository.save(entry)
+    public JournalEntry saveAll(List<JournalEntry> entries) {
+        journalEntryRepository.saveAll(entries)
     }
 }

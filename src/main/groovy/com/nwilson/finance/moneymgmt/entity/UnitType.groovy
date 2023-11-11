@@ -8,12 +8,12 @@ import jakarta.persistence.Id
 import jakarta.persistence.Table
 
 @Entity
-@Table(name="establishment")
-class Establishment {
+@Table(name="unit_type")
+class UnitType {
 
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
-    @Column(name="establishment_id", nullable=false)
+    @GeneratedValue(strategy= GenerationType.AUTO)
+    @Column(name="unit_type_id", nullable=false)
     Integer id
 
     @Column(name="name", nullable=false, length=50)
@@ -21,10 +21,4 @@ class Establishment {
 
     @Column(name="description", nullable=true, length=100)
     String description
-
-    @Column(name="tax_percentage", nullable=true)
-    Double taxPercentage
-
-    @Column(name="zip_code", nullable=true, length=10)
-    String zipCode
 }

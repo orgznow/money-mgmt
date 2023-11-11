@@ -8,6 +8,7 @@ drop table establishment;
     name varchar(50) not null, 
     description varchar(100),
     tax_percentage decimal(5,2) default 7.50,
+    zip_code char(10)
 
     primary key (establishment_id)
 );

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Store Visits</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous"/>
+    </head>
+
+    <body>
+
+        <br/>
+
+        <div class="container">
+
+            <h3 class="text-center">Add New Store Visit</h3>
+
+            <form action="#" th:action="@{/all-entries-mgr}" th:object="${establishmentVisit}" method="post">
+
+                <fieldset class="border border-dark-subtle">
+
+                    <div class="row row-cols-6 justify-content-md-center g-2">
+                        <div class="p-3">
+                            <label th:for="visitDate" class="col">Date of visit</label>
+                            <input type="date" th:field="*{visitDate}" class="col"/>
+                        </div>
+
+                        <div class="p-3">
+                            <label th:for="visitTotalAmount" class="col">Total Amount</label>
+                            <input type="number" step="0.01" min="-99999.99" max="99999.99" value="0.0" th:field="*{visitTotalAmount}" class="col"/>
+                        </div>
+
+                        <div class="p-3">
+                            <label th:for="taxPercentage" class="col">Tax Percentage</label>
+                            <input type="number" step="0.01" min="0.0" max="100.0" value="7.5" th:field="*{taxPercentage}" class="col"/>
+                        </div>
+
+                        <div class="p-3">
+                            <label th:for="store" class="col">Store</label>
+                            <select th:field="*{establishment}" class="col">
+                                <option th:each="store: ${allStores}" th:value="${store.id}" th:text="${store.name}"/>
+                            </select>
+                        </div>
+                   </div>
+
+                    <div class="row row-cols-4 justify-content-md-center g-2">
+                        <div class="p-3">
+                            <label th:for="txType" class="col">Tx Type</label>
+                            <select th:field="*{transactionType}" class="col">
+                                <option th:each="txType: ${allTxTypes}" th:value="${txType.id}" th:text="${txType.name}"/>
+                            </select>
+                        </div>
+
+                        <div class="p-3">
+                            <label th:for="description" class="col">Description</label>
+                            <input type="text" th:field="*{description}" class="col"/>
+                        </div>
+
+                        <div class="p-3">
+                            <label th:for="comments" class="col">Comments</label>
+                            <input type="text" th:field="*{comments}" class="col"/>
+                        </div>
+                    </div>
+
+                    <div class="container">
+                        <table class="table">
+                            <thead>
+                                <tr class="justify-content-md-center g-2">
+                                    <th>Row</th>
+                                    <th>Description</th>
+                                    <th>Rate</th>
+                                    <th>Qty</th>
+                                    <th>Unit Type</th>
+                                    <th>Base Amt</th>
+                                    <th>Discount Amt</th>
+                                    <th>Taxable?</th>
+                                    <th>Tax Amount</th>
+                                    <th>Final Amount</th>
+                                    <th>Comments</th>
+                                    <th>Category</th>
+                                    <th>
+                                        <button type="submit" name="addItem">Add Item</button>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="item, itemStat : *{journalEntries}">
+                                    <td th:text="${itemStat.count}"/>
+                                    <td>
+                                        <input type="text" th:field="*{journalEntries[__${itemStat.index}__].description}"/>
+                                    </td>
+                                    <td>
+                                        <input type="number" step="0.01" min="-99999.99" max="99999.99" value="0.0" th:field="*{journalEntries[__${itemStat.index}__].rateAmount}"/>
+                                    </td>
+                                    <td>
+                                        <input type="number" step="1" min="1" max="100" value="1" th:field="*{journalEntries[__${itemStat.index}__].quantity}"/>
+                                    </td>
+                                    <td>
+                                        <select th:field="*{journalEntries[__${itemStat.index}__].unitType}">
+                                            <option th:each="unitType : ${allUnitTypes}" th:value="${unitType.id}" th:text="${unitType.name}"/>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <input type="number" step="0.01" min="-99999.99" max="99999.99" value="0.0" th:field="*{journalEntries[__${itemStat.index}__].baseAmount}"/>
+                                    </td>
+                                    <td>
+                                        <input type="number" step="0.01" min="-99999.99" max="99999.99" value="0.0" th:field="*{journalEntries[__${itemStat.index}__].discountAmount}"/>
+                                    </td>
+                                    <td>
+                                        <input type="checkbox" th:field="*{journalEntries[__${itemStat.index}__].isTaxable}"/>
+                                    </td>
+                                    <td>
+                                        <input type="number" step="0.01" min="-99999.99" max="99999.99" value="0.0" th:field="*{journalEntries[__${itemStat.index}__].taxAmount}"/>
+                                    </td>
+                                    <td>
+                                        <input type="number" step="0.01" min="-99999.99" max="99999.99" value="0.0" th:field="*{journalEntries[__${itemStat.index}__].finalAmount}"/>
+                                    </td>
+                                    <td>
+                                        <input type="text" th:field="*{journalEntries[__${itemStat.index}__].comments}"/>
+                                    </td>
+                                    <td>
+                                        <select th:field="*{journalEntries[__${itemStat.index}__].spendCategory}">
+                                            <option th:each="categoryType : ${allCategories}" th:value="${categoryType.id}" th:text="${categoryType.name}"/>
+                                        </select>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="row justify-content-md-center g-2">
+                            <div class="p-3 text-center">
+                                <button type="submit" name="save" class="col">Add Store Visit</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </fieldset>
+
+                <br/>
+
+            </form>
+
+        </div>
+
+        <div class="container" th:unless="${#lists.isEmpty(allStoreVisits)}">
+
+            <br/>
+
+            <h3 class="text-center">Store Visits</h3>
+
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Store</th>
+                        <th>Total</th>
+                        <th>Details</th>
+                        <th>Tx Type</th>
+                        <th>Items</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="visit: ${allStoreVisits}">
+                        <td th:text="${visit.visitDateString}"/>
+                        <td th:text="${visit.establishment.name}"/>
+                        <td th:text="${visit.visitTotalAmount}"/>
+                        <td>
+                            <table>
+                                <tbody>
+                                    <tr>
+                                        <td th:text="${visit.description}"/>
+                                    </tr>
+                                    <tr>
+                                        <td th:text="${visit.comments}"/>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                        <td th:text="${visit.transactionType.name}"/>
+                        <td>
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <!--tr th:each="item, itemStat : ${visit.journalEntries}" class="table-success"-->
+                                    <tr th:each="item, itemStat : ${visit.journalEntries}">
+                                        <td th:text="${itemStat.count}"/>
+                                        <td th:text="${item.description}"/>
+                                        <td th:text="${item.finalAmount}"/>
+                                        <td th:text="${item.comments}"/>
+                                        <td th:text="${item.spendCategory.name}"/>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+
+    </body>
+
+</html>
