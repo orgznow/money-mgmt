@@ -20,10 +20,9 @@ class JournalEntry {
 
     public static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("MM/dd/yyyy")
 
-    @TableGenerator(name="journalEntryGen", table="journal_entry_seq")
-
     @Id
     @GeneratedValue(strategy=GenerationType.TABLE, generator="journalEntryGen")
+    @TableGenerator(name="journalEntryGen", table="journal_entry_seq", schema="budget")
     @Column(name="journal_entry_id", nullable=false)
     Integer id
 
@@ -47,7 +46,7 @@ class JournalEntry {
 
     @Column(name="is_taxable", nullable=false)
     @Convert(converter=TrueFalseConverter)
-    boolean isTaxable
+    Boolean isTaxable
 
     @Column(name="tax_amount", nullable=false)
     Double taxAmount

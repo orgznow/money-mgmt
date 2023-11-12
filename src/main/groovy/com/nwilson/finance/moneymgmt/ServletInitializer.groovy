@@ -9,5 +9,4 @@ class ServletInitializer extends SpringBootServletInitializer {
 	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
 		application.sources(MoneyMgmtApplication)
 	}
-
 }

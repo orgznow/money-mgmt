@@ -79,16 +79,6 @@ class JournalEntryMgrController {
         establishmentVisitService.findAll().sort {-it.visitDate.time }
     }
 
-    @GetMapping(value="/all-plain")
-    String showAll(@RequestParam(value="date", required=false) @DateTimeFormat(pattern="MM/dd/yyyy")
-        Date entryDate, Model model) {
-        model.addAttribute("caption", (entryDate) ? "ALL ENTRIES FOR ${JournalEntry.DATE_FORMATTER.format(entryDate)}" : "ALL ENTRIES")
-        List<JournalEntry> entries = journalEntryService.findAll(entryDate)
-        model.addAttribute("entries", entries.sort {-it.entryDate.time })
-        "all-entries"
-    }
-
-    //@GetMapping(value="/all")
     @RequestMapping(value=["/", "/all-entries-mgr"])
     String showEstablishmentVisits(final EstablishmentVisit establishmentVisit) {
         log.debug("Entered showEstablishmentVisits(establishmentVisit=${establishmentVisit})")
@@ -96,35 +86,34 @@ class JournalEntryMgrController {
         "all-entries-mgr"
     }
 
-    //@RequestMapping(value="/all", params=["save"], method=RequestMethod.POST)
-    //@PostMapping(value="/all", params="save")
-    //@PostMapping(params="save")
-    //@RequestMapping(params="save")
     @RequestMapping(value="/all-entries-mgr", params=["save"])
     String saveEstablishmentVisit(final EstablishmentVisit establishmentVisit, final BindingResult bindingResult, final ModelMap model) {
         log.debug("Entered saveEstablishmentVisit(establishmentVisit=${establishmentVisit}, bindingResult=${bindingResult}, model=${model})")
         if (bindingResult.hasErrors()) {
             log.error("bindingResult.hasErrors=true")
+            bindingResult.allErrors.each {
+                log.error("Current error is : ${it}")
+            }
             "all-entries-mgr"
         } else {
+            if (establishmentVisit.taxPercentage == null) {
+                establishmentVisit.taxPercentage = 0.0d
+            }
+            establishmentVisit.journalEntries.each {
+                it.entryDate = establishmentVisit.visitDate
+                it.establishmentVisit = establishmentVisit
+                it.taxAmount = (it.isTaxable) ? (it.taxAmount ?: 0.0d) : 0.0d
+            }
             this.establishmentVisitService.save(establishmentVisit)
-            //this.journalEntryService.saveAll(establishmentVisit.theJournalEntries)
             log.debug("Saved establishmentVisit")
             model.clear()
             "redirect:/all-entries-mgr"
         }
     }
 
-    //@RequestMapping(value="/all", params=["addItem"], method=RequestMethod.POST)
-    //@PostMapping(value="/all", params="addItem")
-    //@PostMapping(params="addItem")
-    //@RequestMapping(params="addItem")
     @RequestMapping(value="/all-entries-mgr", params=["addItem"])
     String addJournalEntry(final EstablishmentVisit establishmentVisit, final BindingResult bindingResult) {
         log.debug("Entered addJournalEntry(establishmentVisit=${establishmentVisit}, bindingResult=${bindingResult})")
-        //JournalEntry entry = new JournalEntry()
-        //entry.theStoreVisit = storeVisit
-        //establishmentVisit.theJournalEntries.add(entry)
         if (establishmentVisit.journalEntries == null) {
             log.debug("establishmentVisit.journalEntries is null")
             establishmentVisit.journalEntries = []

@@ -6,13 +6,15 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.Table
+import jakarta.persistence.TableGenerator
 
 @Entity
 @Table(name="transaction_type")
 class TransactionType {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.TABLE, generator="transactionTypeGen")
+    @TableGenerator(name="transactionTypeGen", table="transaction_type_seq", schema="budget")
     @Column(name="transaction_type_id", nullable=false)
     Integer id
 

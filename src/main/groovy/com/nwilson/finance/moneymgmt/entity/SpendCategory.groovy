@@ -7,6 +7,7 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.Table
+import jakarta.persistence.TableGenerator
 import org.hibernate.type.TrueFalseConverter
 
 @Entity
@@ -14,7 +15,8 @@ import org.hibernate.type.TrueFalseConverter
 class SpendCategory {
 
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.TABLE, generator="categoryGen")
+    @TableGenerator(name="categoryGen", table="category_seq", schema="budget")
     @Column(name="category_id", nullable=false)
     Integer id
 

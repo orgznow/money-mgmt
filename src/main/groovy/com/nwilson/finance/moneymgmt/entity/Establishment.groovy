@@ -6,13 +6,15 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.Table
+import jakarta.persistence.TableGenerator
 
 @Entity
 @Table(name="establishment")
 class Establishment {
 
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.TABLE, generator="establishmentGen")
+    @TableGenerator(name="establishmentGen", table="establishment_seq", schema="budget")
     @Column(name="establishment_id", nullable=false)
     Integer id
 

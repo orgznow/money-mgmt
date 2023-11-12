@@ -1,6 +1,7 @@
 package com.nwilson.finance.moneymgmt.entity
 
 import jakarta.persistence.*
+import org.springframework.format.annotation.DateTimeFormat
 
 import java.text.SimpleDateFormat
 
@@ -10,13 +11,13 @@ class EstablishmentVisit {
 
     public static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("MM/dd/yyyy")
 
-    @TableGenerator(name="establishmentVisitGen", table="establishment_visit_seq")
-
     @Id
     @GeneratedValue(strategy=GenerationType.TABLE, generator="establishmentVisitGen")
+    @TableGenerator(name="establishmentVisitGen", table="establishment_visit_seq", schema="budget")
     @Column(name="establishment_visit_id", nullable=false)
     Integer id
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Column(name="visit_date", nullable=false)
     Date visitDate
 

@@ -11,11 +11,11 @@ class JournalEntryService {
     @Autowired
     JournalEntryRepository journalEntryRepository
 
-    public List<JournalEntry> findAll(Date entryDate) {
+    List<JournalEntry> findAll(Date entryDate) {
         (entryDate) ? journalEntryRepository.findAllByEntryDate(entryDate) : journalEntryRepository.findAll()
     }
 
-    public JournalEntry saveAll(List<JournalEntry> entries) {
+    JournalEntry saveAll(List<JournalEntry> entries) {
         journalEntryRepository.saveAll(entries)
     }
 }

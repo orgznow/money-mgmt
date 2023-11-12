@@ -17,6 +17,7 @@ insert into transaction_type values (3, 'Key OP', 'KeyBank Online Payment');
 insert into transaction_type values (4, 'Key DC', 'KeyBank Debit Card');
 insert into transaction_type values (5, 'Key AP', 'KeyBank AutoPay');
 insert into transaction_type values (6, 'Cash', 'Cash');
+insert into transaction_type values (7, 'Key Trsf', 'KeyBank Transfer');
 
 select * from transaction_type;
 
