@@ -17,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Controller
-import org.springframework.ui.Model
 import org.springframework.ui.ModelMap
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.GetMapping
@@ -76,7 +75,7 @@ class JournalEntryMgrController {
 
     @ModelAttribute("allStoreVisits")
     List<EstablishmentVisit> populateEstablishmentVisits() {
-        establishmentVisitService.findAll().sort {-it.visitDate.time }
+        establishmentVisitService.findAll().sort { a, b -> -a.visitDate.time <=> -b.visitDate.time ?: -a.id <=> -b.id }
     }
 
     @RequestMapping(value=["/", "/all-entries-mgr"])
@@ -96,14 +95,6 @@ class JournalEntryMgrController {
             }
             "all-entries-mgr"
         } else {
-            if (establishmentVisit.taxPercentage == null) {
-                establishmentVisit.taxPercentage = 0.0d
-            }
-            establishmentVisit.journalEntries.each {
-                it.entryDate = establishmentVisit.visitDate
-                it.establishmentVisit = establishmentVisit
-                it.taxAmount = (it.isTaxable) ? (it.taxAmount ?: 0.0d) : 0.0d
-            }
             this.establishmentVisitService.save(establishmentVisit)
             log.debug("Saved establishmentVisit")
             model.clear()
@@ -115,7 +106,6 @@ class JournalEntryMgrController {
     String addJournalEntry(final EstablishmentVisit establishmentVisit, final BindingResult bindingResult) {
         log.debug("Entered addJournalEntry(establishmentVisit=${establishmentVisit}, bindingResult=${bindingResult})")
         if (establishmentVisit.journalEntries == null) {
-            log.debug("establishmentVisit.journalEntries is null")
             establishmentVisit.journalEntries = []
         }
         establishmentVisit.journalEntries.add(new JournalEntry())

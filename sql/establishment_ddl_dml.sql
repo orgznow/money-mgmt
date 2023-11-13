@@ -60,6 +60,9 @@ insert into establishment values (44, 'Trinethra', 'Indian Grocery Store', 7.50)
 insert into establishment values (45, 'Amazon', 'Amazon.com eTailer/Prime Services', 7.50);
 insert into establishment values (46, 'Walmart', 'Department Store', 7.50);
 insert into establishment values (47, 'Woods @ Shagbark', 'Condo Association', 7.50);
+insert into establishment values (48, 'Cafe Creekside', 'Diner & Cafe', 7.50, '43230');
+insert into establishment values (49, 'Michelle Tuesday\'s', 'Music School', 7.50, '43230');
+insert into establishment values (50, 'Harry\'s', 'Shaving Plan', 7.50, null);
 
 select * from establishment;
 

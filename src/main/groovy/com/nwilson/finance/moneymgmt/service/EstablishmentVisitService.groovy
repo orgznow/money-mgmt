@@ -16,6 +16,14 @@ class EstablishmentVisitService {
     }
 
     EstablishmentVisit save(EstablishmentVisit theStoreVisit) {
+        if (theStoreVisit.taxPercentage == null) {
+            theStoreVisit.taxPercentage = 0.0d
+        }
+        theStoreVisit.journalEntries.each {
+            it.entryDate = theStoreVisit.visitDate
+            it.establishmentVisit = theStoreVisit
+            it.taxAmount = (it.isTaxable) ? (it.taxAmount ?: 0.0d) : 0.0d
+        }
         establishmentVisitRepository.save(theStoreVisit)
     }
 }

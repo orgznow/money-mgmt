@@ -33,8 +33,10 @@ insert into category values (19, 'Miscellaneous', 'Miscellaneous', 'T');
 insert into category values (20, 'Salary', 'Salary', 'F');
 insert into category values (21, 'Savings Interest', 'Savings Interest', 'F');
 insert into category values (22, 'Miscellaneous Credit', 'Miscellaneous Credit', 'F');
-insert into category values (23, 'Home Phone', 'Home Phone', 'F');
-insert into category values (24, 'Cell Phone', 'Cell Phone', 'F');
+insert into category values (23, 'Home Phone', 'Home Phone', 'T');
+insert into category values (24, 'Cell Phone', 'Cell Phone', 'T');
+insert into category values (25, 'Personal Improvement', 'Personal Improvement', 'T');
+insert into category values (26, 'Personal Stuff', 'Personal Stuff', 'T');
 
 select * from category;
 
