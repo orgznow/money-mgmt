@@ -8,8 +8,8 @@ drop table establishment;
     name varchar(50) not null, 
     description varchar(100),
     tax_percentage decimal(5,2) default 7.50,
-    zip_code char(10)
-
+    zip_code char(10),
+    
     primary key (establishment_id)
 );
 
@@ -42,7 +42,7 @@ insert into establishment values (26, 'T-Mobile', 'Cellular Phone Provider', 7.5
 insert into establishment values (27, 'YMCA', 'Local Gym', 7.50);
 insert into establishment values (28, 'United Health Golden Rule (Medical)', 'HealthCare Provider', 7.50);
 insert into establishment values (29, 'United Health Golden Rule (Dental & Vision)', 'HealthCare Provider', 7.50);
-##insert into establishment values (30, 'United Health Golden Rule (Dental & Vision)', 'HealthCare Provider', 7.50);
+insert into establishment values (30, 'United Health Golden Rule (Dental & Vision)', 'HealthCare Provider', 7.50);
 insert into establishment values (31, 'Valvoline', 'Car Service Provider', 7.50);
 insert into establishment values (32, 'Getgo', 'Gasoline Station', 7.50);
 insert into establishment values (33, 'AWOL', 'Nightclub', 7.50);
@@ -63,6 +63,41 @@ insert into establishment values (47, 'Woods @ Shagbark', 'Condo Association', 7
 insert into establishment values (48, 'Cafe Creekside', 'Diner & Cafe', 7.50, '43230');
 insert into establishment values (49, 'Michelle Tuesday\'s', 'Music School', 7.50, '43230');
 insert into establishment values (50, 'Harry\'s', 'Shaving Plan', 7.50, null);
+insert into establishment values (51, 'ParkCMH', 'CMH Parking Services', 7.50, null);
+insert into establishment values (52, 'HBK', 'House of Biryanis & Kebabs', 7.50, 43240);
+insert into establishment values (53, 'Garuda', 'Garuda Indian Supermarket', 7.50, 43240);
+insert into establishment values (54, 'Fresh Thyme', 'Fresh Thyme Market', 7.50, 43230);
+insert into establishment values (55, 'OfficeMax', 'Office Depot OfficeMax', 7.50, 43219);
+insert into establishment values (56, 'Street Vendor', 'Generic Street Vendor', 0.00, null);
+insert into establishment values (57, 'NYTimes Cooking', 'NYTimes Cooking App', 0.00, null);
+insert into establishment values (58, 'BridgeCrest/Carvana', 'BridgeCrest Financing w/ Carvana', 0.00, null);
+insert into establishment values (59, 'ACS', 'American Communications Solutions', 0.00, 22039);
+insert into establishment values (60, 'Boscoe\'s', 'Boscoe\'s Nightclub', 7.5, 43206);
+insert into establishment values (61, 'State Farm', 'State Farm', 7.5, null);
+insert into establishment values (62, 'Macy\'s', 'Macy\'s', 7.5, null);
+insert into establishment values (63, 'Macy\'s Online', 'Macy\'s Online - macys.com', 7.5, null);
+insert into establishment values (64, 'BestBuy Polaris', 'BestBuy - Polaris', 7.5, 43240);
+insert into establishment values (65, 'Target Easton', 'Target - Easton', 7.5, 43219);
+insert into establishment values (66, 'Target Polaris', 'Target - Polaris', 7.5, 43240);
+insert into establishment values (67, 'Columbus Dispatch', 'Columbus Dispatch/Gannett Newspaper', 7.5, null);
+insert into establishment values (68, 'El Acapulco', 'El Acapulco Restaurant', 7.5, 43235);
+insert into establishment values (69, 'BestBuy Easton', 'BestBuy - Easton', 7.5, 43219);
+insert into establishment values (70, 'Nazareth', 'Nazareth Restaurant', 7.5, 43230);
+insert into establishment values (71, 'Mediterranean Food', 'Mediterranean Food Import & Bakery #2', 7.5, 43235);
+insert into establishment values (72, 'Damian\'s Expert Tailor', 'Damian\'s Expert Tailoring', 7.5, 43214);
+insert into establishment values (73, 'Micro Center', 'Micro Center Bethel', 7.5, 43214);
+insert into establishment values (74, 'Target New Albany', 'Target - New Albany', 7.5, 43081);
+insert into establishment values (75, 'BestBuy.com', 'BestBuy', 0.00, null);
+insert into establishment values (76, 'Wikimedia.org', 'Wikimedia Org', 0.00, null);
+insert into establishment values (77, 'Staples Easton', 'Staples - Easton', 7.5, 43219);
+insert into establishment values (78, 'Delta', 'Delta Airlines', 7.50, null);
+insert into establishment values (79, 'Torso - ShoNo', 'Torso - Short North', 7.50, 43215);
+insert into establishment values (80, 'Jeni\'s - ShoNo', 'Jeni\'s - Short North', 7.50, 43215);
+insert into establishment values (81, 'Columbus Duchess 631', 'Columbus Duchess BP 631', 7.50, 43230);
+insert into establishment values (82, 'Dadu\'s Bakery', 'Dadu\'s Bakery & Sweets', 7.50, 43240);
+insert into establishment values (83, 'Kuwait Airways', 'Kuwait Airways International Airline', 0.00, null);
+insert into establishment values (84, 'India Grocers', 'India Grocers Sawmill', 7.50, 43017);
+insert into establishment values (85, 'Music Go Round', 'Music Go Round Stoneridge', 7.50, 43230);
 
 select * from establishment;
 

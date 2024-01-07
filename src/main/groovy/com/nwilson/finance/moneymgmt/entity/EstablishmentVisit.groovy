@@ -48,4 +48,8 @@ class EstablishmentVisit {
     String getVisitDateString() {
         DATE_FORMATTER.format(this.visitDate)
     }
+
+    String getFormattedComments() {
+        this.comments ? " - ${this.comments}" : ""
+    }
 }

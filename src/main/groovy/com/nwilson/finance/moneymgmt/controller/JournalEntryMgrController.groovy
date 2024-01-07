@@ -13,6 +13,7 @@ import com.nwilson.finance.moneymgmt.service.SpendCategoryService
 import com.nwilson.finance.moneymgmt.service.TransactionTypeService
 import com.nwilson.finance.moneymgmt.service.UnitTypeService
 import groovy.util.logging.Slf4j
+import jakarta.servlet.http.HttpServletRequest
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.MediaType
@@ -82,6 +83,9 @@ class JournalEntryMgrController {
     String showEstablishmentVisits(final EstablishmentVisit establishmentVisit) {
         log.debug("Entered showEstablishmentVisits(establishmentVisit=${establishmentVisit})")
         establishmentVisit.visitDate = new Date()
+        if (establishmentVisit.journalEntries == null) {
+            establishmentVisit.journalEntries = [new JournalEntry(quantity: 1.0)]
+        }
         "all-entries-mgr"
     }
 
@@ -105,11 +109,17 @@ class JournalEntryMgrController {
     @RequestMapping(value="/all-entries-mgr", params=["addItem"])
     String addJournalEntry(final EstablishmentVisit establishmentVisit, final BindingResult bindingResult) {
         log.debug("Entered addJournalEntry(establishmentVisit=${establishmentVisit}, bindingResult=${bindingResult})")
-        if (establishmentVisit.journalEntries == null) {
-            establishmentVisit.journalEntries = []
-        }
-        establishmentVisit.journalEntries.add(new JournalEntry())
+        establishmentVisit.journalEntries.add(new JournalEntry(quantity: 1.0))
         log.debug("Added journalEntry row to establishmentVisit)")
+        "all-entries-mgr"
+    }
+
+    @RequestMapping(value="/all-entries-mgr", params=["removeItem"])
+    String removeJournalEntry(final EstablishmentVisit establishmentVisit, final BindingResult bindingResult, final HttpServletRequest req) {
+        log.debug("Entered removeJournalEntry(establishmentVisit=${establishmentVisit}, bindingResult=${bindingResult})")
+        Integer rowNum = Integer.valueOf(req.getParameter('removeItem'))
+        establishmentVisit.journalEntries.remove(rowNum)
+        log.debug("Remvoved journalEntry row # ${rowNum} from establishmentVisit)")
         "all-entries-mgr"
     }
 }

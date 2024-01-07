@@ -17,10 +17,12 @@
 
             <h3 class="text-center">Add New Store Visit</h3>
 
+            <!-- The entry form for new establishment/store visit -->
             <form action="#" th:action="@{/all-entries-mgr}" th:object="${establishmentVisit}" method="post">
 
                 <fieldset>
 
+                    <!-- Row 1:: Date of visit, Total Amount, Tax Percentage, Store, Tx Type -->
                     <div class="row g-2">
 
                         <div class="col-md-2 p-2">
@@ -54,6 +56,7 @@
 
                     </div>
 
+                    <!-- Row 2:: Description, Comments -->
                     <div class="row g-2">
 
                         <div class="col-md-6 p-2">
@@ -68,8 +71,12 @@
 
                     </div>
 
-                    <table class="table table-bordered table-condensed table-hover">
-                        <thead>
+                    <!-- Row 3:: Table for line item entries for establishment/store visit:
+                            Description, Rate, Qty, Unit Type, Base Amt, Discount Amt, Tax?, Tax Amt, Tip Amt, Final Amt, Comments, Category, (Button)
+                    -->
+                    <div class="row g-2 table-responsive">
+                        <table class="table table-bordered table-condensed table-sm table-hover">
+                            <thead>
                             <tr>
                                 <th>#</th>
                                 <th>Description</th>
@@ -80,15 +87,16 @@
                                 <th>Discount Amt</th>
                                 <th>Tax?</th>
                                 <th>Tax Amt</th>
+                                <th>Tip Amt</th>
                                 <th>Final Amt</th>
                                 <th>Comments</th>
                                 <th>Category</th>
                                 <th>
-                                    <button type="submit" name="addItem">Add Item</button>
+                                    <button type="submit" name="addItem" class="btn-lg">Add Item</button>
                                 </th>
                             </tr>
-                        </thead>
-                        <tbody>
+                            </thead>
+                            <tbody>
                             <tr th:each="item, itemStat : *{journalEntries}">
                                 <td th:text="${itemStat.count}"/>
                                 <td>
@@ -98,7 +106,7 @@
                                     <input type="number" step="0.01" min="-99999.99" max="99999.99" value="0.0" th:field="*{journalEntries[__${itemStat.index}__].rateAmount}"/>
                                 </td>
                                 <td>
-                                    <input type="number" step="1" min="1" max="99" value="1" th:field="*{journalEntries[__${itemStat.index}__].quantity}"/>
+                                    <input type="number" step="0.01" min="0.01" max="99" value="1.0" th:field="*{journalEntries[__${itemStat.index}__].quantity}"/>
                                 </td>
                                 <td>
                                     <select th:field="*{journalEntries[__${itemStat.index}__].unitType}">
@@ -118,20 +126,28 @@
                                     <input type="number" step="0.01" min="-999" max="999" value="0.0" th:field="*{journalEntries[__${itemStat.index}__].taxAmount}"/>
                                 </td>
                                 <td>
+                                    <input type="number" step="0.01" min="-999" max="999" value="0.0" th:field="*{journalEntries[__${itemStat.index}__].tipAmount}"/>
+                                </td>
+                                <td>
                                     <input type="number" step="0.01" min="-99999" max="99999" value="0.0" th:field="*{journalEntries[__${itemStat.index}__].finalAmount}"/>
                                 </td>
                                 <td>
-                                    <input type="text" size="15" th:field="*{journalEntries[__${itemStat.index}__].comments}"/>
+                                    <input type="text" size="10" th:field="*{journalEntries[__${itemStat.index}__].comments}"/>
                                 </td>
                                 <td>
                                     <select th:field="*{journalEntries[__${itemStat.index}__].spendCategory}">
                                         <option th:each="categoryType : ${allCategories}" th:value="${categoryType.id}" th:text="${categoryType.name}"/>
                                     </select>
                                 </td>
+                                <td>
+                                    <button type="submit" name="removeItem" class="btn-lg" th:value="${itemStat.index}" >Delt Item</button>
+                                </td>
                             </tr>
-                        </tbody>
-                    </table>
+                            </tbody>
+                        </table>
+                    </div>
 
+                    <!-- Row 4:: Submit button -->
                     <div class="row">
                         <div class="p-3 text-center">
                             <button type="submit" name="save" class="col">Add Store Visit</button>
@@ -146,12 +162,16 @@
 
         </div>
 
+        <!-- The display of existing store visit data -->
         <div class="container-fluid" th:unless="${#lists.isEmpty(allStoreVisits)}">
 
-            <br/>
+            <hr class="border border-dark"/>
 
             <h3 class="text-center">Store Visits</h3>
 
+            <!-- Table to display all existing establishment/store visits:
+                    Date, Store, Total, Details, Tx Type, Items
+             -->
             <table class="table table-bordered table-hover">
                 <thead>
                     <tr>
@@ -175,24 +195,35 @@
                                         <td th:text="${visit.description}"/>
                                     </tr>
                                     <tr>
-                                        <td th:text="${visit.comments}"/>
+                                        <td th:text="${visit.formattedComments}"/>
                                     </tr>
                                 </tbody>
                             </table>
                         </td>
                         <td th:text="${visit.transactionType.name}"/>
                         <td>
-                            <table class="table table-bordered">
-                                <tbody>
-                                    <tr th:each="item, itemStat : ${visit.journalEntries}">
-                                        <td th:text="${itemStat.count}"/>
-                                        <td th:text="${item.description}"/>
-                                        <td th:text="${item.finalAmount}"/>
-                                        <td th:text="${item.comments}"/>
-                                        <td th:text="${item.spendCategory.name}"/>
-                                    </tr>
-                                </tbody>
-                            </table>
+                            <!-- Collapsible to display all line items per establishment/store visit -->
+                            <details>
+                                <summary>
+                                    <button type="button" class="btn btn-default" aria-label="Left Align">
+                                        <span class="glyphicon glyphicon-hand-down" aria-hidden="true"></span> Details ...
+                                    </button>
+                                </summary>
+                                <!-- Sub table to display all line items per establishment/store visit:
+                                        #, Description, Final Amount, Comments, Category
+                                 -->
+                                <table class="table table-bordered">
+                                    <tbody>
+                                        <tr th:each="item, itemStat : ${visit.journalEntries}">
+                                            <td th:text="${itemStat.count}"/>
+                                            <td th:text="${item.description}"/>
+                                            <td th:text="${item.finalAmount}"/>
+                                            <td th:text="${item.comments}"/>
+                                            <td th:text="${item.spendCategory.name}"/>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </details>
                         </td>
                     </tr>
                 </tbody>

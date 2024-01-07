@@ -1,5 +1,6 @@
 package com.nwilson.finance.moneymgmt.entity
 
+import groovy.transform.TupleConstructor
 import jakarta.persistence.Column
 import jakarta.persistence.Convert
 import jakarta.persistence.Entity
@@ -16,6 +17,7 @@ import java.text.SimpleDateFormat
 
 @Entity
 @Table(name="journal_entry")
+@TupleConstructor
 class JournalEntry {
 
     public static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("MM/dd/yyyy")
@@ -50,6 +52,9 @@ class JournalEntry {
 
     @Column(name="tax_amount", nullable=false)
     Double taxAmount
+
+    @Column(name="tip_amount", nullable=false)
+    Double tipAmount
 
     @Column(name="final_amount", nullable=false)
     Double finalAmount

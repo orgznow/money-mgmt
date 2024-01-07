@@ -14,6 +14,7 @@ create table journal_entry (
     discount_amount decimal(7, 2),
     is_taxable char(1) not null,
 	tax_amount decimal(7, 2) not null,
+    tip_amount decimal(7, 2) not null,
     final_amount decimal(7, 2) not null,
     comments varchar(500),
 	establishment_visit_id int not null,
