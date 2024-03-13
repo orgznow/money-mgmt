@@ -27,7 +27,7 @@ insert into category values (12, 'Gasoline', 'Gasoline', 'T');
 insert into category values (13, 'Entertainment', 'Entertainment', 'T');
 insert into category values (14, 'Loan Interest', 'Loan Interest', 'T');
 insert into category values (16, 'Loan Paydown', 'Loan Paydown', 'T');
-insert into category values (17, 'Vacation', 'Vacation', 'T');
+insert into category values (17, 'Travel/Vacation', 'Travel/Vacation', 'T');
 insert into category values (18, 'Charity', 'Charity', 'T');
 insert into category values (19, 'Miscellaneous', 'Miscellaneous', 'T');
 insert into category values (20, 'Salary', 'Salary', 'F');
@@ -65,6 +65,13 @@ insert into category values (51, 'Groceries - Entert.', 'Groceries - Home Entert
 insert into category values (52, 'Groceries - Alchl.', 'Groceries - Home Alcohol', 'T');
 insert into category values (53, 'Groceries - Entert. Alchl.', 'Groceries - Home Entertainment Alcohol', 'T');
 insert into category values (54, 'Donation', 'Donation', 'F');
+insert into category values (55, 'Loan Advance', 'Loan Advance', 'T');
+insert into category values (56, 'Entertainment - Eat Out', 'Entertainment - Eat Out', 'T');
+insert into category values (57, 'Bank Fees', 'Bank Fees', 'F');
+insert into category values (58, 'Home Decor', 'Home Decor', 'T');
+insert into category values (59, 'Eat out - Parking', 'Eat out - Parking', 'F');
+insert into category values (60, 'Eat out - Tip', 'Eat out - Tip', 'F');
 
 select * from category;
+
 

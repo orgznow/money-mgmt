@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <property name="LOG_PATH" value="logs" />
+    <!-- If LOG_PATH is not defined above, LOG_PATH will default to C:\Users\<USERNAME>\AppData\Local\Temp on Windows 10 -->
+    <property name="LOG_FILE" value="${LOG_FILE:-${LOG_PATH:-${LOG_TEMP:-${java.io.tmpdir:-/tmp}}}/money-mgmt.log}"/>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml" />
+    <include resource="org/springframework/boot/logging/logback/file-appender.xml" />
+    <root level="INFO">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="FILE" />
+    </root>
+    <logger name="com.nwilson.finance.moneymgmt" level="TRACE" />
+    <!--logger name="org.apache" level="TRACE" /-->
+    <logger name="org.springframework" level="WARN" />
+    <!--logger name="org.springframework.web" level="TRACE" /-->
+    <logger name="org.springframework.transaction" level="WARN" />
+    <!-- in order to debug some marshalling issues, this needs to be TRACE -->
+    <logger name="org.springframework.web.servlet.mvc" level="WARN" />
+</configuration>

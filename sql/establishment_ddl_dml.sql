@@ -25,7 +25,7 @@ insert into establishment values (9, 'Trader Joe\'s', 'Groceries, Personal Care 
 insert into establishment values (10, 'Pacific Eatery', 'Pan Asian Restaurant', 7.50);
 insert into establishment values (11, 'Asian Gourmet', 'Pan Asian Restaurant', 7.50);
 insert into establishment values (12, 'Biryani Corner', 'Indian Takeout Restaurant', 7.50);
-insert into establishment values (13, 'Wendy\'s', 'Fast Food Restaurant', 7.50);
+insert into establishment values (13, 'Wendy\'s', 'Fast Food Resstaurant', 7.50);
 insert into establishment values (14, 'Mc Donald\'s', 'Fast Food Restaurant', 7.50);
 insert into establishment values (15, 'Burger King', 'Fast Food Restaurant', 7.50);
 insert into establishment values (16, 'KFC', 'Fast Food Restaurant', 7.50);
@@ -98,6 +98,12 @@ insert into establishment values (82, 'Dadu\'s Bakery', 'Dadu\'s Bakery & Sweets
 insert into establishment values (83, 'Kuwait Airways', 'Kuwait Airways International Airline', 0.00, null);
 insert into establishment values (84, 'India Grocers', 'India Grocers Sawmill', 7.50, 43017);
 insert into establishment values (85, 'Music Go Round', 'Music Go Round Stoneridge', 7.50, 43230);
+insert into establishment values (86, 'REI Easton', 'REI Co-op Easton', 7.50, 43219);
+insert into establishment values (87, 'Hyderabad House', 'Hyderabad House', 7.50, 43240);
+insert into establishment values (88, 'Citibank NA/AxisBank', 'Axis Bank (formerly Citibank North America Non-Resident India Bank Account)', null, 560001);
+insert into establishment values (89, 'Micheal\'s', 'Micheal\'s Store Easton', 7.5, 43219);
+insert into establishment values (90, 'Oman Air', 'Oman Air International Airline', 0.00, null);
+insert into establishment values (91, 'Papa John\'s', 'Papa John\'s Stoneridge', 7.5, 43230);
 
 select * from establishment;
 

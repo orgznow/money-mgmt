@@ -6,6 +6,7 @@ import com.nwilson.finance.moneymgmt.entity.JournalEntry
 import com.nwilson.finance.moneymgmt.entity.SpendCategory
 import com.nwilson.finance.moneymgmt.entity.TransactionType
 import com.nwilson.finance.moneymgmt.entity.UnitType
+import com.nwilson.finance.moneymgmt.input.ViewConfigInput
 import com.nwilson.finance.moneymgmt.service.EstablishmentService
 import com.nwilson.finance.moneymgmt.service.EstablishmentVisitService
 import com.nwilson.finance.moneymgmt.service.JournalEntryService
@@ -23,8 +24,11 @@ import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseBody
+
+import java.text.SimpleDateFormat
 
 @Controller
 @Slf4j
@@ -48,6 +52,7 @@ class JournalEntryMgrController {
     @Autowired
     private TransactionTypeService transactionTypeService
 
+    @Deprecated
     @GetMapping(value="/all-rest", produces=MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody Iterable<JournalEntry> findAll(@RequestParam(value="date", required=false) @DateTimeFormat(pattern="MM/dd/yyyy")
         Date entryDate) {
@@ -56,30 +61,63 @@ class JournalEntryMgrController {
 
     @ModelAttribute("allTxTypes")
     List<TransactionType> populateTransactionTypes() {
+        log.debug("In populateTransactionTypes()")
         transactionTypeService.findAll().sort {it.name }
     }
 
     @ModelAttribute("allUnitTypes")
     List<UnitType> populateUnitTypes() {
+        log.debug("In populateUnitTypes()")
         unitTypeService.findAll().sort { it.name }
     }
 
     @ModelAttribute("allCategories")
     List<SpendCategory> populateSpendCategories() {
+        log.debug("In populateSpendCategories()")
         spendCategoryService.findAll().sort { it.name }
     }
 
     @ModelAttribute("allStores")
     List<Establishment> populateEstablishments() {
+        log.debug("In populateEstablishments()")
         establishmentService.findAll().sort {a, b -> a.name <=> b.name ?: a.zipCode <=> b.zipCode }
     }
 
     @ModelAttribute("allStoreVisits")
-    List<EstablishmentVisit> populateEstablishmentVisits() {
-        establishmentVisitService.findAll().sort { a, b -> -a.visitDate.time <=> -b.visitDate.time ?: -a.id <=> -b.id }
+    List<EstablishmentVisit> populateEstablishmentVisits(final ModelMap model) {
+        ViewConfigInput viewConfigInput = model.getAttribute("displayMonthYear")
+        log.debug("In populateEstablishmentVisits() with viewConfigInput ${viewConfigInput}")
+        if (!viewConfigInput) {
+            viewConfigInput = new ViewConfigInput()
+        }
+        viewConfigInput.displayMonthYear = viewConfigInput.displayMonthYear ?: new SimpleDateFormat('yyyy-MM').format(new Date())
+        establishmentVisitService.findAll(viewConfigInput.displayMonthYear).sort { a, b -> -a.visitDate.time <=> -b.visitDate.time ?: -a.id <=> -b.id }
     }
 
-    @RequestMapping(value=["/", "/all-entries-mgr"])
+    @ModelAttribute("displayMonthYear")
+    ViewConfigInput getDisplayMonthYear(final ModelMap model) {
+        ViewConfigInput viewConfigInput = model.getAttribute("displayMonthYear")
+        log.debug("In getDisplayMonthYear() with viewConfigInput ${viewConfigInput}")
+        if (!viewConfigInput) {
+            viewConfigInput = new ViewConfigInput()
+        }
+        viewConfigInput.displayMonthYear = viewConfigInput.displayMonthYear ?: new SimpleDateFormat('yyyy-MM').format(new Date()) //'2023-11'
+        log.debug("Leaving getDisplayMonthYear() with ${viewConfigInput}")
+        viewConfigInput
+    }
+
+    @RequestMapping(value="/all-entries-mgr", params=["displayMonthYear"], method=RequestMethod.POST)
+    String setDisplayMonthYear(final ViewConfigInput viewConfigInput, final BindingResult bindingResult, final ModelMap model) {
+        log.debug("Entered setDisplayMonthYear() with displayMonthYear ${viewConfigInput}")
+        model.addAttribute("displayMonthYear", viewConfigInput)
+        List<EstablishmentVisit> visits = establishmentVisitService.findAll(viewConfigInput.displayMonthYear).sort { a, b -> -a.visitDate.time <=> -b.visitDate.time ?: -a.id <=> -b.id }
+        model.addAttribute("allStoreVisits", visits)
+        EstablishmentVisit visit = new EstablishmentVisit(visitDate: new SimpleDateFormat('yyyy-MM').parse(viewConfigInput.displayMonthYear), journalEntries: [new JournalEntry(quantity: 1.0)])
+        model.addAttribute("establishmentVisit", visit)
+        "all-entries-mgr"
+    }
+
+    @RequestMapping(value=["/", "/all-entries-mgr"], method=RequestMethod.GET)
     String showEstablishmentVisits(final EstablishmentVisit establishmentVisit) {
         log.debug("Entered showEstablishmentVisits(establishmentVisit=${establishmentVisit})")
         establishmentVisit.visitDate = new Date()
@@ -89,7 +127,7 @@ class JournalEntryMgrController {
         "all-entries-mgr"
     }
 
-    @RequestMapping(value="/all-entries-mgr", params=["save"])
+    @RequestMapping(value="/all-entries-mgr", params=["save"], method=RequestMethod.POST)
     String saveEstablishmentVisit(final EstablishmentVisit establishmentVisit, final BindingResult bindingResult, final ModelMap model) {
         log.debug("Entered saveEstablishmentVisit(establishmentVisit=${establishmentVisit}, bindingResult=${bindingResult}, model=${model})")
         if (bindingResult.hasErrors()) {
@@ -106,7 +144,7 @@ class JournalEntryMgrController {
         }
     }
 
-    @RequestMapping(value="/all-entries-mgr", params=["addItem"])
+    @RequestMapping(value="/all-entries-mgr", params=["addItem"], method=RequestMethod.POST)
     String addJournalEntry(final EstablishmentVisit establishmentVisit, final BindingResult bindingResult) {
         log.debug("Entered addJournalEntry(establishmentVisit=${establishmentVisit}, bindingResult=${bindingResult})")
         establishmentVisit.journalEntries.add(new JournalEntry(quantity: 1.0))
@@ -114,7 +152,7 @@ class JournalEntryMgrController {
         "all-entries-mgr"
     }
 
-    @RequestMapping(value="/all-entries-mgr", params=["removeItem"])
+    @RequestMapping(value="/all-entries-mgr", params=["removeItem"], method=RequestMethod.POST)
     String removeJournalEntry(final EstablishmentVisit establishmentVisit, final BindingResult bindingResult, final HttpServletRequest req) {
         log.debug("Entered removeJournalEntry(establishmentVisit=${establishmentVisit}, bindingResult=${bindingResult})")
         Integer rowNum = Integer.valueOf(req.getParameter('removeItem'))

@@ -24,6 +24,7 @@ insert into transaction_type values (10, 'BestBuy CC', 'BestBuy Credit Card');
 insert into transaction_type values (11, 'Miscellaneous', 'Miscellaneous');
 insert into transaction_type values (12, 'Key Int', 'Key Interest');
 insert into transaction_type values (13, 'Gift Card', 'Gift Card');
+insert into transaction_type values (14, 'Check', 'Check');
 
 update transaction_type set name = 'Key DD', description = 'KeyBank Direct Deposit' where transaction_type_id = 4;
 

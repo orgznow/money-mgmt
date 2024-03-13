@@ -2,17 +2,31 @@ package com.nwilson.finance.moneymgmt.service
 
 import com.nwilson.finance.moneymgmt.dao.EstablishmentVisitRepository
 import com.nwilson.finance.moneymgmt.entity.EstablishmentVisit
+import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
+import java.text.SimpleDateFormat
+
 @Service
+@Slf4j
 class EstablishmentVisitService {
 
     @Autowired
     EstablishmentVisitRepository establishmentVisitRepository
 
-    List<EstablishmentVisit> findAll() {
-        establishmentVisitRepository.findAll()
+    List<EstablishmentVisit> findAll(String displayMonthYear) {
+        log.debug("Entered findAll with displayMonthYear ${displayMonthYear}")
+        Date monthYearLB = (displayMonthYear) ? new SimpleDateFormat('yyyy-MM').parse(displayMonthYear): null
+        Calendar cal = Calendar.getInstance()
+        cal.with {
+            setTime(monthYearLB.clone())
+            add(Calendar.MONTH, 1)
+            add(Calendar.SECOND, -1)
+        }
+        Date forMonthYearUB = cal.getTime()
+        log.debug("Determined forMonthYear lowerBound as ${monthYearLB} and upperBound as ${forMonthYearUB}")
+        establishmentVisitRepository.findAllByVisitDateBetween(monthYearLB, forMonthYearUB)
     }
 
     EstablishmentVisit save(EstablishmentVisit theStoreVisit) {

@@ -156,7 +156,29 @@
 
                 </fieldset>
 
-                <br/>
+           </form>
+
+        </div>
+
+        <div class="container-fluid">
+
+            <hr class="border border-dark"/>
+
+            <!-- The entry form for setting the month/year for display of store visit data -->
+            <form action="#" th:action="@{/all-entries-mgr}" th:object="${displayMonthYear}" method="post">
+
+                <fieldset>
+
+                    <div class="row g-2">
+
+                        <div class="p-3 text-center">
+                            <label th:for="displayMonthYear">Display Month/Year:</label>
+                            <input type="month" th:field="*{displayMonthYear}" onchange="this.form.submit()"/>
+                        </div>
+
+                    </div>
+
+                </fieldset>
 
             </form>
 

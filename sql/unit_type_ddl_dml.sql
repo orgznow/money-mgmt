@@ -31,6 +31,8 @@ insert into unit_type values (11, 'Count - Jar', 'Count of Jars');
 insert into unit_type values (12, 'Count - Cntnr.', 'Count of Containers');
 insert into unit_type values (13, 'Count - Crate', 'Count of Crates');
 insert into unit_type values (14, 'Count - Bunch', 'Count of Bunches');
+insert into unit_type values (15, 'Count - Tube', 'Count of Tubes');
+insert into unit_type values (16, 'Count - Cup', 'Count of Cups');
 
 select * from unit_type;
 
