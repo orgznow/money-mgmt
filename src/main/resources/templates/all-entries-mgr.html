@@ -189,10 +189,6 @@
         <!-- The div for the display of summary and details of existing store visit data -->
         <div class="container-fluid" th:unless="${#lists.isEmpty(allStoreVisitsInfo.allStoreVisits)}">
 
-            <hr class="border border-dark"/>
-
-            <h3 class="text-center">Store Visits</h3>
-
             <!-- Collapsible to display summarization data by weeks of the month  -->
             <details>
                 <summary>
@@ -254,6 +250,10 @@
                 </table>
 
             </details>
+
+            <hr class="border border-dark"/>
+
+            <h3 class="text-center">Store Visits</h3>
 
             <hr class="border border-dark"/>
 

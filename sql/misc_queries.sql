@@ -1,6 +1,8 @@
-update establishment_visit vst set /*vst.visit_date = '2024-01-13',*/ vst.description = 'Jan 2024 Car Payment' where vst.establishment_visit_id in (1028)
+update establishment_visit vst set /*vst.visit_date = '2024-01-13',*/ vst.description = 'Feb 2024 Key HELOC Loan Payment' where vst.establishment_visit_id in (1150)
 
 update establishment_visit vst set vst.visit_total_amount = 1167.68 where vst.establishment_visit_id in (876)
+
+update establishment_visit vst set vst.visit_date = '2024-02-29' where vst.establishment_visit_id in (1148, 1149, 1150)
 
 update establishment_visit vst set vst.establishment_id = 26 where vst.establishment_visit_id in (1006)
 
