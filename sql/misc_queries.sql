@@ -8,7 +8,7 @@ update establishment_visit vst set vst.description = 'Feb 2024 Paramount+/CBS Su
 
 update establishment_visit vst set vst.description = 'Feb 2024 Paramount+/CBS Subscription', vst.establishment_id = 22 where vst.establishment_visit_id in (1099)
 
-update establishment_visit vst set vst.transaction_type_id = 1 where vst.establishment_visit_id in (1132)
+update establishment_visit vst set vst.transaction_type_id = 1 where vst.establishment_visit_id in (1164)
 
 update 	journal_entry ent 
 set 	ent.rate_amount=10.98, ent.is_taxable='T', ent.tax_amount=0.82, ent.tip_amount=5.00, ent.final_amount=16.80, ent.comments='Eggs Benedict (Benny) + Coffee'

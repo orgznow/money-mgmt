@@ -25,7 +25,7 @@ class EstablishmentVisit {
     String description
 
     @Column(name="visit_total_amount", nullable=false)
-    Double visitTotalAmount
+    BigDecimal visitTotalAmount
 
     @Column(name="tax_percentage", nullable=false)
     Double taxPercentage

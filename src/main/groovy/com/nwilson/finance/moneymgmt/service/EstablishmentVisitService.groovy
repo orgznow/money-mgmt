@@ -16,7 +16,7 @@ class EstablishmentVisitService {
     EstablishmentVisitRepository establishmentVisitRepository
 
     List<EstablishmentVisit> findAll(String displayMonthYear) {
-        log.debug("Entered findAll with displayMonthYear ${displayMonthYear}")
+        log.trace("Entered findAll with displayMonthYear ${displayMonthYear}")
         Date monthYearLB = (displayMonthYear) ? new SimpleDateFormat('yyyy-MM').parse(displayMonthYear): null
         Calendar cal = Calendar.getInstance()
         cal.with {
@@ -25,7 +25,7 @@ class EstablishmentVisitService {
             add(Calendar.SECOND, -1)
         }
         Date forMonthYearUB = cal.getTime()
-        log.debug("Determined forMonthYear lowerBound as ${monthYearLB} and upperBound as ${forMonthYearUB}")
+        log.trace("Determined forMonthYear lowerBound as ${monthYearLB} and upperBound as ${forMonthYearUB}")
         establishmentVisitRepository.findAllByVisitDateBetween(monthYearLB, forMonthYearUB)
     }
 

@@ -37,29 +37,29 @@ class JournalEntry {
     String description
 
     @Column(name="rate_amount", nullable=false)
-    Double rateAmount
+    BigDecimal rateAmount
 
     @Column(name="quantity", nullable=false)
     Double quantity
 
     @Column(name="base_amount", nullable=false)
-    Double baseAmount
+    BigDecimal baseAmount
 
     @Column(name="discount_amount", nullable=true)
-    Double discountAmount
+    BigDecimal discountAmount
 
     @Column(name="is_taxable", nullable=false)
     @Convert(converter=TrueFalseConverter)
     Boolean isTaxable
 
     @Column(name="tax_amount", nullable=false)
-    Double taxAmount
+    BigDecimal taxAmount
 
     @Column(name="tip_amount", nullable=false)
-    Double tipAmount
+    BigDecimal tipAmount
 
     @Column(name="final_amount", nullable=false)
-    Double finalAmount
+    BigDecimal finalAmount
 
     @Column(name="comments", nullable=true, length=500)
     String comments

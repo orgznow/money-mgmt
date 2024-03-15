@@ -15,7 +15,6 @@ import com.nwilson.finance.moneymgmt.service.TransactionTypeService
 import com.nwilson.finance.moneymgmt.service.UnitTypeService
 import groovy.util.logging.Slf4j
 import jakarta.servlet.http.HttpServletRequest
-import org.codehaus.groovy.runtime.GStringImpl
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.MediaType
@@ -30,7 +29,6 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseBody
 
 import java.text.SimpleDateFormat
-import java.time.LocalDate
 import java.time.ZoneId
 import java.time.temporal.ChronoField
 
@@ -100,20 +98,20 @@ class JournalEntryMgrController {
 
     private static Map toResults(List<EstablishmentVisit> storeVisits) {
         List<EstablishmentVisit> sortedStoreVisits = storeVisits.sort { a, b ->
-            -a.visitDate.time <=> -b.visitDate.time ?: a.id <=> b.id
+            -a.visitDate.time <=> -b.visitDate.time ?: -a.id <=> -b.id
         }
         Map<Integer, List<EstablishmentVisit>> storeVisitsByWeekOfMonth = sortedStoreVisits.groupBy {
             it.visitDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate().get(ChronoField.ALIGNED_WEEK_OF_MONTH)
         }.sort()
-        Map<String, Map<String, Double>> weeklySpendByCategories = toWeeklySpendByCategories(storeVisitsByWeekOfMonth)
-        Map<String, Map<String, Double>> weeklySpendByTxTypes = toWeeklySpendByTxTypes(storeVisitsByWeekOfMonth)
-        List<Map<String, Double>> weeklySpendTotals = weeklySpendByCategories.collect { k, v -> ["${k}": v["Total"]] }
-        List<Map<String, Double>> weeklySpendTotalsAlt = weeklySpendByTxTypes.collect { k, v -> ["${k}": v["Total"]] }
+        Map<String, Map<String, BigDecimal>> weeklySpendByCategories = toWeeklySpendByCategories(storeVisitsByWeekOfMonth)
+        Map<String, Map<String, BigDecimal>> weeklySpendByTxTypes = toWeeklySpendByTxTypes(storeVisitsByWeekOfMonth)
+        List<Map<String, String>> weeklySpendTotals = weeklySpendByCategories.collect { k, v -> ["${k}": "\$${v['Total'].toString()}"] }
+        List<Map<String, String>> weeklySpendTotalsAlt = weeklySpendByTxTypes.collect { k, v -> ["${k}": "\$${v['Total'].toString()}"] }
         if (weeklySpendTotals != weeklySpendTotalsAlt) {
             log.error("weeklySpendTotals ${weeklySpendTotals} does not match weeklySpendTotalsAlt ${weeklySpendTotalsAlt}")
         }
-        Double totalMonthlySpendToDate = storeVisits.visitTotalAmount.sum()
-        Double totalMonthlySpendToDateAlt = storeVisits.journalEntries.finalAmount.flatten().sum()
+        BigDecimal totalMonthlySpendToDate = storeVisits.visitTotalAmount.sum()
+        BigDecimal totalMonthlySpendToDateAlt = storeVisits.journalEntries.finalAmount.flatten().sum()
         if (totalMonthlySpendToDate != totalMonthlySpendToDateAlt) {
             log.error("totalMonthlySpendToDate ${totalMonthlySpendToDate} does not match totalMonthlySpendToDateAlt ${totalMonthlySpendToDateAlt}")
         }
@@ -126,15 +124,15 @@ class JournalEntryMgrController {
     }
 
     private static Map<String, Map<String, Double>> toWeeklySpendByCategories(Map<Integer, List<EstablishmentVisit>> storeVisitsByWeekOfMonth) {
-        Map<String, Map<String, Double>> weeklySpendByCategories = [:]
+        Map<String, Map<String, BigDecimal>> weeklySpendByCategories = [:]
         storeVisitsByWeekOfMonth.each {  weekNbr, weeklyStoreVisits ->
             List<JournalEntry> allWeeklyJournalEntries = weeklyStoreVisits*.journalEntries.flatten()
-            log.debug("In week ${weekNbr} - all journal entry finalAmounts are: ${allWeeklyJournalEntries.finalAmount} with a total of ${allWeeklyJournalEntries.finalAmount.sum()}")
+            log.trace("In week ${weekNbr} - all journal entry finalAmounts are: ${allWeeklyJournalEntries.finalAmount} with a total of ${allWeeklyJournalEntries.finalAmount.sum()}")
             Map<String, List<JournalEntry>> weeklyJournalEntriesByCategory = allWeeklyJournalEntries.groupBy {  je -> je.spendCategory.description }.sort()
-            Map<String, Double> spendByCategory = [:]
+            Map<String, BigDecimal> spendByCategory = [:]
             weeklyJournalEntriesByCategory.each { category, journalEntries ->
-                Double totalWeeklySpendByCategory = journalEntries*.finalAmount.sum()
-                log.debug("Total week ${weekNbr} spend by category ${category} is ${totalWeeklySpendByCategory}")
+                BigDecimal totalWeeklySpendByCategory = journalEntries*.finalAmount.sum()
+                log.trace("Total week ${weekNbr} spend by category ${category} is ${totalWeeklySpendByCategory}")
                 spendByCategory << [(category): totalWeeklySpendByCategory]
             }
             spendByCategory << [Total: allWeeklyJournalEntries.finalAmount.sum()]
@@ -147,16 +145,16 @@ class JournalEntryMgrController {
     }
 
     private static Map<String, Map<String, Double>> toWeeklySpendByTxTypes(SortedMap<Integer, List<EstablishmentVisit>> storeVisitsByWeekOfMonth) {
-        Map<String, Map<String, Double>> weeklySpendByTxTypes = [:]
+        Map<String, Map<String, BigDecimal>> weeklySpendByTxTypes = [:]
         storeVisitsByWeekOfMonth.each {  weekNbr, weeklyStoreVisits ->
-            log.debug("In week ${weekNbr} - all visitTotalAmount are: ${weeklyStoreVisits.visitTotalAmount} with a total of ${weeklyStoreVisits.visitTotalAmount.sum()}")
+            log.trace("In week ${weekNbr} - all visitTotalAmount are: ${weeklyStoreVisits.visitTotalAmount} with a total of ${weeklyStoreVisits.visitTotalAmount.sum()}")
             Map<String, List<EstablishmentVisit>> weeklyVisitsByTxType = weeklyStoreVisits.groupBy { visit ->
                 visit.transactionType.name
             }
-            Map<String, Double> spendByTxTypes = [:]
+            Map<String, BigDecimal> spendByTxTypes = [:]
             weeklyVisitsByTxType.each { txType, visits ->
-                Double totalWeeklySpendByTxType = visits*.visitTotalAmount.flatten().sum()
-                log.debug("Total week ${weekNbr} spend by txType ${txType} is ${totalWeeklySpendByTxType}")
+                BigDecimal totalWeeklySpendByTxType = visits*.visitTotalAmount.flatten().sum()
+                log.trace("Total week ${weekNbr} spend by txType ${txType} is ${totalWeeklySpendByTxType}")
                 spendByTxTypes << [(txType): totalWeeklySpendByTxType]
             }
             spendByTxTypes << [Total: weeklyStoreVisits.visitTotalAmount.sum()]
@@ -171,18 +169,18 @@ class JournalEntryMgrController {
     @ModelAttribute("displayMonthYear")
     ViewConfigInput getDisplayMonthYear(final ModelMap model) {
         ViewConfigInput viewConfigInput = model.getAttribute("displayMonthYear")
-        log.debug("In getDisplayMonthYear() with viewConfigInput ${viewConfigInput}")
+        log.trace("In getDisplayMonthYear() with viewConfigInput ${viewConfigInput}")
         if (!viewConfigInput) {
             viewConfigInput = new ViewConfigInput()
         }
         viewConfigInput.displayMonthYear = viewConfigInput.displayMonthYear ?: new SimpleDateFormat('yyyy-MM').format(new Date()) //'2023-11'
-        log.debug("Leaving getDisplayMonthYear() with ${viewConfigInput}")
+        log.trace("Leaving getDisplayMonthYear() with ${viewConfigInput}")
         viewConfigInput
     }
 
     @RequestMapping(value="/all-entries-mgr", params=["displayMonthYear"], method=RequestMethod.POST)
     String setDisplayMonthYear(final ViewConfigInput viewConfigInput, final BindingResult bindingResult, final ModelMap model) {
-        log.debug("Entered setDisplayMonthYear() with displayMonthYear ${viewConfigInput}")
+        log.trace("Entered setDisplayMonthYear() with displayMonthYear ${viewConfigInput}")
         model.addAttribute("displayMonthYear", viewConfigInput)
         List<EstablishmentVisit> visits = establishmentVisitService.findAll(viewConfigInput.displayMonthYear).sort { a, b -> -a.visitDate.time <=> -b.visitDate.time ?: -a.id <=> -b.id }
         model.addAttribute("allStoreVisits", visits)
@@ -193,7 +191,7 @@ class JournalEntryMgrController {
 
     @RequestMapping(value=["/", "/all-entries-mgr"], method=RequestMethod.GET)
     String showEstablishmentVisits(final EstablishmentVisit establishmentVisit) {
-        log.debug("Entered showEstablishmentVisits(establishmentVisit=${establishmentVisit})")
+        log.trace("Entered showEstablishmentVisits(establishmentVisit=${establishmentVisit})")
         establishmentVisit.visitDate = new Date()
         if (establishmentVisit.journalEntries == null) {
             establishmentVisit.journalEntries = [new JournalEntry(quantity: 1.0)]
@@ -203,7 +201,7 @@ class JournalEntryMgrController {
 
     @RequestMapping(value="/all-entries-mgr", params=["save"], method=RequestMethod.POST)
     String saveEstablishmentVisit(final EstablishmentVisit establishmentVisit, final BindingResult bindingResult, final ModelMap model) {
-        log.debug("Entered saveEstablishmentVisit(establishmentVisit=${establishmentVisit}, bindingResult=${bindingResult}, model=${model})")
+        log.trace("Entered saveEstablishmentVisit(establishmentVisit=${establishmentVisit}, bindingResult=${bindingResult}, model=${model})")
         if (bindingResult.hasErrors()) {
             log.error("bindingResult.hasErrors=true")
             bindingResult.allErrors.each {
@@ -212,7 +210,7 @@ class JournalEntryMgrController {
             "all-entries-mgr"
         } else {
             this.establishmentVisitService.save(establishmentVisit)
-            log.debug("Saved establishmentVisit")
+            log.trace("Saved establishmentVisit")
             model.clear()
             "redirect:/all-entries-mgr"
         }
@@ -220,18 +218,18 @@ class JournalEntryMgrController {
 
     @RequestMapping(value="/all-entries-mgr", params=["addItem"], method=RequestMethod.POST)
     String addJournalEntry(final EstablishmentVisit establishmentVisit, final BindingResult bindingResult) {
-        log.debug("Entered addJournalEntry(establishmentVisit=${establishmentVisit}, bindingResult=${bindingResult})")
+        log.trace("Entered addJournalEntry(establishmentVisit=${establishmentVisit}, bindingResult=${bindingResult})")
         establishmentVisit.journalEntries.add(new JournalEntry(quantity: 1.0))
-        log.debug("Added journalEntry row to establishmentVisit)")
+        log.trace("Added journalEntry row to establishmentVisit)")
         "all-entries-mgr"
     }
 
     @RequestMapping(value="/all-entries-mgr", params=["removeItem"], method=RequestMethod.POST)
     String removeJournalEntry(final EstablishmentVisit establishmentVisit, final BindingResult bindingResult, final HttpServletRequest req) {
-        log.debug("Entered removeJournalEntry(establishmentVisit=${establishmentVisit}, bindingResult=${bindingResult})")
+        log.trace("Entered removeJournalEntry(establishmentVisit=${establishmentVisit}, bindingResult=${bindingResult})")
         Integer rowNum = Integer.valueOf(req.getParameter('removeItem'))
         establishmentVisit.journalEntries.remove(rowNum)
-        log.debug("Remvoved journalEntry row # ${rowNum} from establishmentVisit)")
+        log.trace("Remvoved journalEntry row # ${rowNum} from establishmentVisit)")
         "all-entries-mgr"
     }
 }
