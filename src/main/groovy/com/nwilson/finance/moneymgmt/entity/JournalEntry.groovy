@@ -1,5 +1,6 @@
 package com.nwilson.finance.moneymgmt.entity
 
+import groovy.transform.ToString
 import groovy.transform.TupleConstructor
 import jakarta.persistence.Column
 import jakarta.persistence.Convert
@@ -18,6 +19,7 @@ import java.text.SimpleDateFormat
 @Entity
 @Table(name="journal_entry")
 @TupleConstructor
+@ToString(includeNames=true)
 class JournalEntry {
 
     public static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("MM/dd/yyyy")

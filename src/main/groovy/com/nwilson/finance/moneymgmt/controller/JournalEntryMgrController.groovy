@@ -15,6 +15,7 @@ import com.nwilson.finance.moneymgmt.service.TransactionTypeService
 import com.nwilson.finance.moneymgmt.service.UnitTypeService
 import groovy.util.logging.Slf4j
 import jakarta.servlet.http.HttpServletRequest
+import org.codehaus.groovy.runtime.GStringImpl
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.MediaType
@@ -29,6 +30,9 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseBody
 
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.ZoneId
+import java.time.temporal.ChronoField
 
 @Controller
 @Slf4j
@@ -83,15 +87,85 @@ class JournalEntryMgrController {
         establishmentService.findAll().sort {a, b -> a.name <=> b.name ?: a.zipCode <=> b.zipCode }
     }
 
-    @ModelAttribute("allStoreVisits")
-    List<EstablishmentVisit> populateEstablishmentVisits(final ModelMap model) {
+    @ModelAttribute("allStoreVisitsInfo")
+    Map populateEstablishmentVisits(final ModelMap model) {
         ViewConfigInput viewConfigInput = model.getAttribute("displayMonthYear")
-        log.debug("In populateEstablishmentVisits() with viewConfigInput ${viewConfigInput}")
         if (!viewConfigInput) {
             viewConfigInput = new ViewConfigInput()
         }
         viewConfigInput.displayMonthYear = viewConfigInput.displayMonthYear ?: new SimpleDateFormat('yyyy-MM').format(new Date())
-        establishmentVisitService.findAll(viewConfigInput.displayMonthYear).sort { a, b -> -a.visitDate.time <=> -b.visitDate.time ?: -a.id <=> -b.id }
+        log.debug("In populateEstablishmentVisits() for ${viewConfigInput.displayMonthYear}")
+        toResults(establishmentVisitService.findAll(viewConfigInput.displayMonthYear))
+    }
+
+    private static Map toResults(List<EstablishmentVisit> storeVisits) {
+        List<EstablishmentVisit> sortedStoreVisits = storeVisits.sort { a, b ->
+            -a.visitDate.time <=> -b.visitDate.time ?: a.id <=> b.id
+        }
+        Map<Integer, List<EstablishmentVisit>> storeVisitsByWeekOfMonth = sortedStoreVisits.groupBy {
+            it.visitDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate().get(ChronoField.ALIGNED_WEEK_OF_MONTH)
+        }.sort()
+        Map<String, Map<String, Double>> weeklySpendByCategories = toWeeklySpendByCategories(storeVisitsByWeekOfMonth)
+        Map<String, Map<String, Double>> weeklySpendByTxTypes = toWeeklySpendByTxTypes(storeVisitsByWeekOfMonth)
+        List<Map<String, Double>> weeklySpendTotals = weeklySpendByCategories.collect { k, v -> ["${k}": v["Total"]] }
+        List<Map<String, Double>> weeklySpendTotalsAlt = weeklySpendByTxTypes.collect { k, v -> ["${k}": v["Total"]] }
+        if (weeklySpendTotals != weeklySpendTotalsAlt) {
+            log.error("weeklySpendTotals ${weeklySpendTotals} does not match weeklySpendTotalsAlt ${weeklySpendTotalsAlt}")
+        }
+        Double totalMonthlySpendToDate = storeVisits.visitTotalAmount.sum()
+        Double totalMonthlySpendToDateAlt = storeVisits.journalEntries.finalAmount.flatten().sum()
+        if (totalMonthlySpendToDate != totalMonthlySpendToDateAlt) {
+            log.error("totalMonthlySpendToDate ${totalMonthlySpendToDate} does not match totalMonthlySpendToDateAlt ${totalMonthlySpendToDateAlt}")
+        }
+        Map storeVisitsInfo = [
+            totalMonthlySpendToDate: totalMonthlySpendToDate, weeklySpendTotals: weeklySpendTotals, weeklySpendByCategories: weeklySpendByCategories,
+            weeklySpendByTxTypes: weeklySpendByTxTypes, allStoreVisits: sortedStoreVisits
+        ]
+        log.debug("Returning storeVisitsInfo as ${storeVisitsInfo}")
+        storeVisitsInfo
+    }
+
+    private static Map<String, Map<String, Double>> toWeeklySpendByCategories(Map<Integer, List<EstablishmentVisit>> storeVisitsByWeekOfMonth) {
+        Map<String, Map<String, Double>> weeklySpendByCategories = [:]
+        storeVisitsByWeekOfMonth.each {  weekNbr, weeklyStoreVisits ->
+            List<JournalEntry> allWeeklyJournalEntries = weeklyStoreVisits*.journalEntries.flatten()
+            log.debug("In week ${weekNbr} - all journal entry finalAmounts are: ${allWeeklyJournalEntries.finalAmount} with a total of ${allWeeklyJournalEntries.finalAmount.sum()}")
+            Map<String, List<JournalEntry>> weeklyJournalEntriesByCategory = allWeeklyJournalEntries.groupBy {  je -> je.spendCategory.description }.sort()
+            Map<String, Double> spendByCategory = [:]
+            weeklyJournalEntriesByCategory.each { category, journalEntries ->
+                Double totalWeeklySpendByCategory = journalEntries*.finalAmount.sum()
+                log.debug("Total week ${weekNbr} spend by category ${category} is ${totalWeeklySpendByCategory}")
+                spendByCategory << [(category): totalWeeklySpendByCategory]
+            }
+            spendByCategory << [Total: allWeeklyJournalEntries.finalAmount.sum()]
+            spendByCategory = spendByCategory.sort()
+            weeklySpendByCategories << ["Week${weekNbr}": spendByCategory]
+        }
+        weeklySpendByCategories = weeklySpendByCategories.sort()
+        log.debug("weeklySpendByCategories=${weeklySpendByCategories}")
+        weeklySpendByCategories
+    }
+
+    private static Map<String, Map<String, Double>> toWeeklySpendByTxTypes(SortedMap<Integer, List<EstablishmentVisit>> storeVisitsByWeekOfMonth) {
+        Map<String, Map<String, Double>> weeklySpendByTxTypes = [:]
+        storeVisitsByWeekOfMonth.each {  weekNbr, weeklyStoreVisits ->
+            log.debug("In week ${weekNbr} - all visitTotalAmount are: ${weeklyStoreVisits.visitTotalAmount} with a total of ${weeklyStoreVisits.visitTotalAmount.sum()}")
+            Map<String, List<EstablishmentVisit>> weeklyVisitsByTxType = weeklyStoreVisits.groupBy { visit ->
+                visit.transactionType.name
+            }
+            Map<String, Double> spendByTxTypes = [:]
+            weeklyVisitsByTxType.each { txType, visits ->
+                Double totalWeeklySpendByTxType = visits*.visitTotalAmount.flatten().sum()
+                log.debug("Total week ${weekNbr} spend by txType ${txType} is ${totalWeeklySpendByTxType}")
+                spendByTxTypes << [(txType): totalWeeklySpendByTxType]
+            }
+            spendByTxTypes << [Total: weeklyStoreVisits.visitTotalAmount.sum()]
+            spendByTxTypes = spendByTxTypes.sort()
+            weeklySpendByTxTypes << ["Week${weekNbr}": spendByTxTypes]
+        }
+        weeklySpendByTxTypes = weeklySpendByTxTypes.sort()
+        log.debug("weeklySpendByTxTypes=${weeklySpendByTxTypes}")
+        weeklySpendByTxTypes
     }
 
     @ModelAttribute("displayMonthYear")

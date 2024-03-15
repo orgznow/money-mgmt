@@ -13,6 +13,7 @@
 
         <br/>
 
+        <!-- The div for the entry form for new establishment/store visit -->
         <div class="container-fluid">
 
             <h3 class="text-center">Add New Store Visit</h3>
@@ -160,6 +161,7 @@
 
         </div>
 
+        <!-- The div for the entry form for setting the month/year for display of store visit data -->
         <div class="container-fluid">
 
             <hr class="border border-dark"/>
@@ -184,12 +186,76 @@
 
         </div>
 
-        <!-- The display of existing store visit data -->
-        <div class="container-fluid" th:unless="${#lists.isEmpty(allStoreVisits)}">
+        <!-- The div for the display of summary and details of existing store visit data -->
+        <div class="container-fluid" th:unless="${#lists.isEmpty(allStoreVisitsInfo.allStoreVisits)}">
 
             <hr class="border border-dark"/>
 
             <h3 class="text-center">Store Visits</h3>
+
+            <!-- Collapsible to display summarization data by weeks of the month  -->
+            <details>
+                <summary>
+                    <button type="button" class="btn btn-default" aria-label="Left Align">
+                        <span class="glyphicon glyphicon-hand-down" aria-hidden="true"></span>
+                        <strong> Summary ... </strong>
+                        <em th:text="${allStoreVisitsInfo.weeklySpendTotals}"/>
+                    </button>
+                </summary>
+
+                <!-- Table to display summarization data by week and category -->
+                <table class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>Week</th>
+                            <th>Category Details</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="spend: ${allStoreVisitsInfo.weeklySpendByCategories.entrySet()}">
+                            <td th:text="${spend.key}"/>
+                            <td>
+                                <table class="table table-bordered table-hover">
+                                    <tbody>
+                                        <tr th:each="categoryDetail: ${spend.value.entrySet()}">
+                                            <td th:text="${categoryDetail.key}"/>
+                                            <td th:text="${categoryDetail.value}"/>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Table to display summarization data by week and tx type -->
+                <table class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>Week</th>
+                            <th>Tx Type</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="spend: ${allStoreVisitsInfo.weeklySpendByTxTypes.entrySet()}">
+                            <td th:text="${spend.key}"/>
+                            <td>
+                                <table class="table table-bordered table-hover">
+                                    <tbody>
+                                    <tr th:each="txDetail: ${spend.value.entrySet()}">
+                                        <td th:text="${txDetail.key}"/>
+                                        <td th:text="${txDetail.value}"/>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </details>
+
+            <hr class="border border-dark"/>
 
             <!-- Table to display all existing establishment/store visits:
                     Date, Store, Total, Details, Tx Type, Items
@@ -206,7 +272,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr th:each="visit: ${allStoreVisits}">
+                    <tr th:each="visit: ${allStoreVisitsInfo.allStoreVisits}">
                         <td th:text="${visit.visitDateString}"/>
                         <td th:text="${visit.establishment.name}"/>
                         <td th:text="${visit.visitTotalAmount}"/>
