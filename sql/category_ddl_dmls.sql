@@ -8,6 +8,7 @@ drop table category;
     name varchar(50) not null, 
     description varchar(100), 
     is_expense  char(1),
+    is_default boolean not null default false,
     
     primary key (category_id)
 );

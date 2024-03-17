@@ -42,16 +42,16 @@
                         </div>
 
                         <div class="col-md-3 p-2">
-                            <label th:for="store">Store</label>
+                            <label th:for="establishment">Store</label>
                             <select th:field="*{establishment}">
                                 <option th:each="store: ${allStores}" th:value="${store.id}" th:text="${store.name}"/>
                             </select>
                         </div>
 
                         <div class="col-md-2 col-md-offset-3 p-2">
-                            <label th:for="txType">Tx Type</label>
+                            <label th:for="transactionType">Tx Type</label>
                             <select th:field="*{transactionType}">
-                                <option th:each="txType: ${allTxTypes}" th:value="${txType.id}" th:text="${txType.name}"/>
+                                <option th:each="txType: ${allTxTypes}" th:value="${txType.id}" th:selected="${txType.isDefault == true}" th:text="${txType.name}"/>
                             </select>
                         </div>
 
@@ -93,7 +93,7 @@
                                 <th>Comments</th>
                                 <th>Category</th>
                                 <th>
-                                    <button type="submit" name="addItem" class="btn-lg">Add Item</button>
+                                    <button type="submit" id="addItemBtn" name="addItem" class="btn-lg">Add Item</button>
                                 </th>
                             </tr>
                             </thead>
@@ -111,11 +111,11 @@
                                 </td>
                                 <td>
                                     <select th:field="*{journalEntries[__${itemStat.index}__].unitType}">
-                                        <option th:each="unitType : ${allUnitTypes}" th:value="${unitType.id}" th:text="${unitType.name}"/>
+                                        <option th:each="unitType : ${allUnitTypes}" th:value="${unitType.id}" th:text="${unitType.name}" th:selected="${unitType.isDefault}"/>
                                     </select>
                                 </td>
                                 <td>
-                                    <input type="number" step="0.01" min="-99999" max="99999.99" value="0.0" th:field="*{journalEntries[__${itemStat.index}__].baseAmount}"/>
+                                    <input type="number" step="0.01" min="-99999" max="99999.99" value="0.0" th:field="*{journalEntries[__${itemStat.index}__].baseAmount}" onfocusin="onItemBaseAmountInFocus(this)"/>
                                 </td>
                                 <td>
                                     <input type="number" step="0.01" min="-99999" max="99999" value="0.0" th:field="*{journalEntries[__${itemStat.index}__].discountAmount}"/>
@@ -124,20 +124,20 @@
                                     <input type="checkbox" th:field="*{journalEntries[__${itemStat.index}__].isTaxable}"/>
                                 </td>
                                 <td>
-                                    <input type="number" step="0.01" min="-999" max="999" value="0.0" th:field="*{journalEntries[__${itemStat.index}__].taxAmount}"/>
+                                    <input type="number" step="0.01" min="-999" max="999" value="0.0" th:field="*{journalEntries[__${itemStat.index}__].taxAmount}" onfocusin="onItemTaxAmountInFocus(this)"/>
                                 </td>
                                 <td>
                                     <input type="number" step="0.01" min="-999" max="999" value="0.0" th:field="*{journalEntries[__${itemStat.index}__].tipAmount}"/>
                                 </td>
                                 <td>
-                                    <input type="number" step="0.01" min="-99999" max="99999" value="0.0" th:field="*{journalEntries[__${itemStat.index}__].finalAmount}"/>
+                                    <input type="number" step="0.01" min="-99999" max="99999" value="0.0" th:field="*{journalEntries[__${itemStat.index}__].finalAmount}" onfocusin="onItemFinalAmountInFocus(this)"/>
                                 </td>
                                 <td>
                                     <input type="text" size="10" th:field="*{journalEntries[__${itemStat.index}__].comments}"/>
                                 </td>
                                 <td>
-                                    <select th:field="*{journalEntries[__${itemStat.index}__].spendCategory}">
-                                        <option th:each="categoryType : ${allCategories}" th:value="${categoryType.id}" th:text="${categoryType.name}"/>
+                                    <select th:field="*{journalEntries[__${itemStat.index}__].spendCategory}" onfocusout="onCategoryLoseFocus(this)">
+                                        <option th:each="categoryType : ${allCategories}" th:value="${categoryType.id}" th:text="${categoryType.name}" th:selected="${categoryType.isDefault}"/>
                                     </select>
                                 </td>
                                 <td>
@@ -318,6 +318,8 @@
             </table>
 
         </div>
+
+        <script src="js/all-entries-mgr.js"></script>
 
     </body>
 

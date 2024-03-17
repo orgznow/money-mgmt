@@ -29,4 +29,7 @@ class SpendCategory {
     @Column(name="is_expense", nullable=true)
     @Convert(converter= TrueFalseConverter)
     Boolean isExpense
+
+    @Column(name="is_default", nullable=false)
+    boolean isDefault
 }

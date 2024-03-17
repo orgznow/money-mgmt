@@ -7,6 +7,7 @@ create table unit_type (
 	unit_type_id int auto_increment,
     name varchar(50) not null, 
     description varchar(100),
+    is_default boolean not null default false,
 
     primary key (unit_type_id)
 );

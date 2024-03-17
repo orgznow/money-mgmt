@@ -62,19 +62,25 @@ class JournalEntryMgrController {
     @ModelAttribute("allTxTypes")
     List<TransactionType> populateTransactionTypes() {
         log.debug("In populateTransactionTypes()")
-        transactionTypeService.findAll().sort {it.name }
+        List<TransactionType> allTxTypes = transactionTypeService.findAll().sort {it.name }
+        TransactionType defaultTxType = allTxTypes.find { it.isDefault }
+        [defaultTxType] + (allTxTypes - defaultTxType)
     }
 
     @ModelAttribute("allUnitTypes")
     List<UnitType> populateUnitTypes() {
         log.debug("In populateUnitTypes()")
-        unitTypeService.findAll().sort { it.name }
+        List<UnitType> allUnitTypes = unitTypeService.findAll().sort { it.name }
+        UnitType defaultUnitType = allUnitTypes.find { it.isDefault }
+        [defaultUnitType] + (allUnitTypes - defaultUnitType)
     }
 
     @ModelAttribute("allCategories")
     List<SpendCategory> populateSpendCategories() {
         log.debug("In populateSpendCategories()")
-        spendCategoryService.findAll().sort { it.name }
+        List<SpendCategory> allSpendCategories = spendCategoryService.findAll().sort { it.name }
+        SpendCategory defaultSpendCategory = allSpendCategories.find { it.isDefault }
+        [defaultSpendCategory] + (allSpendCategories - defaultSpendCategory)
     }
 
     @ModelAttribute("allStores")
@@ -91,7 +97,7 @@ class JournalEntryMgrController {
         }
         viewConfigInput.displayMonthYear = viewConfigInput.displayMonthYear ?: new SimpleDateFormat('yyyy-MM').format(new Date())
         log.debug("In populateEstablishmentVisits() for ${viewConfigInput.displayMonthYear}")
-        establishmentVisitService.toResults(viewConfigInput.displayMonthYear)
+        establishmentVisitService.getMonthlySpendInfo(viewConfigInput.displayMonthYear)
     }
 
     @ModelAttribute("displayMonthYear")

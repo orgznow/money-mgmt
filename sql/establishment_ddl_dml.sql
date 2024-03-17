@@ -104,6 +104,9 @@ insert into establishment values (88, 'Citibank NA/AxisBank', 'Axis Bank (former
 insert into establishment values (89, 'Micheal\'s', 'Micheal\'s Store Easton', 7.5, 43219);
 insert into establishment values (90, 'Oman Air', 'Oman Air International Airline', 0.00, null);
 insert into establishment values (91, 'Papa John\'s', 'Papa John\'s Stoneridge', 7.5, 43230);
+insert into establishment values (92, 'Priceline.com', 'Priceline Online Travel Agency', 0.0, null);
+insert into establishment values (93, 'O\'Connors Club 20', 'O\'Connors Club 20', 7.5, 43202);
+insert into establishment values (94, 'Ledo\'s Tavern', 'Ledo\'s Tavern', 7.5, 43202);
 
 select * from establishment;
 

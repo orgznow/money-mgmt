@@ -23,4 +23,8 @@ class UnitType {
 
     @Column(name="description", nullable=true, length=100)
     String description
+
+
+    @Column(name="is_default", nullable=false)
+    boolean isDefault
 }

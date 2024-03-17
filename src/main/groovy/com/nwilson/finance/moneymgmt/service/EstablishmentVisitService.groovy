@@ -18,8 +18,25 @@ class EstablishmentVisitService {
     @Autowired
     EstablishmentVisitRepository establishmentVisitRepository
 
-    Map toResults(String displayMonthYear) {
-        List<EstablishmentVisit> storeVisits = findAll(displayMonthYear)
+    Map getMonthlySpendInfo(String displayMonthYear) {
+        toMonthlySpendInfo(findAll(displayMonthYear))
+    }
+
+    private List<EstablishmentVisit> findAll(String displayMonthYear) {
+        log.trace("Entered findAll with displayMonthYear ${displayMonthYear}")
+        Date monthYearLB = (displayMonthYear) ? new SimpleDateFormat('yyyy-MM').parse(displayMonthYear): null
+        Calendar cal = Calendar.getInstance()
+        cal.with {
+            setTime(monthYearLB.clone())
+            add(Calendar.MONTH, 1)
+            add(Calendar.SECOND, -1)
+        }
+        Date forMonthYearUB = cal.getTime()
+        log.trace("Determined forMonthYear lowerBound as ${monthYearLB} and upperBound as ${forMonthYearUB}")
+        establishmentVisitRepository.findAllByVisitDateBetween(monthYearLB, forMonthYearUB)
+    }
+
+    private static Map toMonthlySpendInfo(List<EstablishmentVisit> storeVisits) {
         List<EstablishmentVisit> sortedStoreVisits = storeVisits.sort { a, b ->
             -a.visitDate.time <=> -b.visitDate.time ?: -a.id <=> -b.id
         }
@@ -51,16 +68,16 @@ class EstablishmentVisitService {
         storeVisitsByWeekOfMonth.each {  weekNbr, weeklyStoreVisits ->
             List<JournalEntry> allWeeklyJournalEntries = weeklyStoreVisits*.journalEntries.flatten()
             log.trace("In week ${weekNbr} - all journal entry finalAmounts are: ${allWeeklyJournalEntries.finalAmount} with a total of ${allWeeklyJournalEntries.finalAmount.sum()}")
-            Map<String, List<JournalEntry>> weeklyJournalEntriesByCategory = allWeeklyJournalEntries.groupBy {  je -> je.spendCategory.description }.sort()
+            Map<String, List<JournalEntry>> weeklyJournalEntriesByCategory = allWeeklyJournalEntries.groupBy {  je -> je.spendCategory.description }
             Map<String, BigDecimal> spendByCategory = [:]
             weeklyJournalEntriesByCategory.each { category, journalEntries ->
                 BigDecimal totalWeeklySpendByCategory = journalEntries*.finalAmount.sum()
                 log.trace("Total week ${weekNbr} spend by category ${category} is ${totalWeeklySpendByCategory}")
                 spendByCategory << [(category): totalWeeklySpendByCategory]
             }
-            spendByCategory << [Total: allWeeklyJournalEntries.finalAmount.sum()]
-            spendByCategory = spendByCategory.sort()
-            weeklySpendByCategories << ["Week${weekNbr}": spendByCategory]
+            Map<String, BigDecimal> sortedSpendByCategory = [:] + spendByCategory.sort()
+            sortedSpendByCategory << [Total: allWeeklyJournalEntries.finalAmount.sum()]
+            weeklySpendByCategories << ["Week${weekNbr}": sortedSpendByCategory]
         }
         weeklySpendByCategories = weeklySpendByCategories.sort()
         log.debug("weeklySpendByCategories=${weeklySpendByCategories}")
@@ -74,33 +91,19 @@ class EstablishmentVisitService {
             Map<String, List<EstablishmentVisit>> weeklyVisitsByTxType = weeklyStoreVisits.groupBy { visit ->
                 visit.transactionType.name
             }
-            Map<String, BigDecimal> spendByTxTypes = [:]
+            Map<String, BigDecimal> spendByTxType = [:]
             weeklyVisitsByTxType.each { txType, visits ->
                 BigDecimal totalWeeklySpendByTxType = visits*.visitTotalAmount.flatten().sum()
                 log.trace("Total week ${weekNbr} spend by txType ${txType} is ${totalWeeklySpendByTxType}")
-                spendByTxTypes << [(txType): totalWeeklySpendByTxType]
+                spendByTxType << [(txType): totalWeeklySpendByTxType]
             }
-            spendByTxTypes << [Total: weeklyStoreVisits.visitTotalAmount.sum()]
-            spendByTxTypes = spendByTxTypes.sort()
-            weeklySpendByTxTypes << ["Week${weekNbr}": spendByTxTypes]
+            Map<String, BigDecimal> sortedSpendByTxType = [:] + spendByTxType.sort()
+            sortedSpendByTxType << [Total: weeklyStoreVisits.visitTotalAmount.sum()]
+            weeklySpendByTxTypes << ["Week${weekNbr}": sortedSpendByTxType]
         }
         weeklySpendByTxTypes = weeklySpendByTxTypes.sort()
         log.debug("weeklySpendByTxTypes=${weeklySpendByTxTypes}")
         weeklySpendByTxTypes
-    }
-
-    private List<EstablishmentVisit> findAll(String displayMonthYear) {
-        log.trace("Entered findAll with displayMonthYear ${displayMonthYear}")
-        Date monthYearLB = (displayMonthYear) ? new SimpleDateFormat('yyyy-MM').parse(displayMonthYear): null
-        Calendar cal = Calendar.getInstance()
-        cal.with {
-            setTime(monthYearLB.clone())
-            add(Calendar.MONTH, 1)
-            add(Calendar.SECOND, -1)
-        }
-        Date forMonthYearUB = cal.getTime()
-        log.trace("Determined forMonthYear lowerBound as ${monthYearLB} and upperBound as ${forMonthYearUB}")
-        establishmentVisitRepository.findAllByVisitDateBetween(monthYearLB, forMonthYearUB)
     }
 
     EstablishmentVisit save(EstablishmentVisit theStoreVisit) {

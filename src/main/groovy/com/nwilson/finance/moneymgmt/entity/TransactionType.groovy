@@ -1,5 +1,6 @@
 package com.nwilson.finance.moneymgmt.entity
 
+import groovy.transform.ToString
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
@@ -10,6 +11,7 @@ import jakarta.persistence.TableGenerator
 
 @Entity
 @Table(name="transaction_type")
+@ToString(includeNames=true)
 class TransactionType {
 
     @Id
@@ -23,4 +25,7 @@ class TransactionType {
 
     @Column(name="description", nullable=true, length=100)
     String description
+
+    @Column(name="is_default", nullable=false)
+    boolean isDefault
 }

@@ -7,6 +7,7 @@ drop table transaction_type;
 	transaction_type_id int,
     name varchar(50) not null, 
     description varchar(100), 
+    is_default boolean not null default false
 
     primary key (transaction_type_id)
 );
