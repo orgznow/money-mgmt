@@ -72,6 +72,7 @@ insert into category values (57, 'Bank Fees', 'Bank Fees', 'F');
 insert into category values (58, 'Home Decor', 'Home Decor', 'T');
 insert into category values (59, 'Eat out - Parking', 'Eat out - Parking', 'F');
 insert into category values (60, 'Eat out - Tip', 'Eat out - Tip', 'F');
+insert into category values (61, 'Entertainment - Tip', 'Entertainment - Tip', 'F', false);
 
 select * from category;
 

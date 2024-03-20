@@ -1,5 +1,6 @@
 package com.nwilson.finance.moneymgmt.service
 
+import com.nwilson.finance.moneymgmt.FinanceConverter
 import com.nwilson.finance.moneymgmt.dao.JournalEntryRepository
 import com.nwilson.finance.moneymgmt.entity.JournalEntry
 import org.springframework.beans.factory.annotation.Autowired
@@ -11,11 +12,12 @@ class JournalEntryService {
     @Autowired
     JournalEntryRepository journalEntryRepository
 
-    List<JournalEntry> findAll(Date entryDate) {
-        (entryDate) ? journalEntryRepository.findAllByEntryDate(entryDate) : journalEntryRepository.findAll()
+    List<Map> findAll(Date entryDate) {
+        def results = (entryDate) ? journalEntryRepository.findAllByEntryDate(entryDate) : journalEntryRepository.findAll()
+        results.collect { FinanceConverter.toJournalEntryMap(it) }
     }
 
-    JournalEntry saveAll(List<JournalEntry> entries) {
+    List<JournalEntry> saveAll(List<JournalEntry> entries) {
         journalEntryRepository.saveAll(entries)
     }
 }

@@ -4,7 +4,7 @@ where 	vst.establishment_visit_id in (1354)
 
 update establishment_visit vst set vst.visit_total_amount = 1167.68 where vst.establishment_visit_id in (876)
 
-update establishment_visit vst set vst.visit_date = '2024-02-29' where vst.establishment_visit_id in (1148, 1149, 1150)
+update establishment_visit vst set vst.visit_date = '2024-03-17' where vst.establishment_visit_id in (1358)
 
 update establishment_visit vst set vst.establishment_id = 26 where vst.establishment_visit_id in (1006)
 
@@ -34,7 +34,9 @@ update category set name='Groceries - Frozen Prep.', description='Groceries - Fr
 
 delete from journal_entry where journal_entry_id in (1587)
 
-delete from establishment_visit where establishment_visit_id in (1157)
+delete from journal_entry where establishment_visit_id in (1402)
+
+delete from establishment_visit where establishment_visit_id in (1402)
 
 select * from establishment_visit vst where vst.description like '%Basic%'
 

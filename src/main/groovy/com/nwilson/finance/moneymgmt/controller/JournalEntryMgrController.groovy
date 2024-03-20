@@ -54,55 +54,33 @@ class JournalEntryMgrController {
 
     @Deprecated
     @GetMapping(value="/all-rest", produces=MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody Iterable<JournalEntry> findAll(@RequestParam(value="date", required=false) @DateTimeFormat(pattern="MM/dd/yyyy")
-        Date entryDate) {
+    @ResponseBody List<Map> findAll(@RequestParam(value="date", required=false) @DateTimeFormat(pattern="MM/dd/yyyy") Date entryDate) {
         journalEntryService.findAll(entryDate)
     }
 
     @ModelAttribute("allTxTypes")
-    List<TransactionType> populateTransactionTypes() {
-        log.debug("In populateTransactionTypes()")
-        List<TransactionType> allTxTypes = transactionTypeService.findAll().sort {it.name }
-        TransactionType defaultTxType = allTxTypes.find { it.isDefault }
-        [defaultTxType] + (allTxTypes - defaultTxType)
+    List<Map> getAllTransactionTypes() {
+        transactionTypeService.findAll()
     }
 
     @ModelAttribute("allUnitTypes")
-    List<UnitType> populateUnitTypes() {
-        log.debug("In populateUnitTypes()")
-        List<UnitType> allUnitTypes = unitTypeService.findAll().sort { it.name }
-        UnitType defaultUnitType = allUnitTypes.find { it.isDefault }
-        [defaultUnitType] + (allUnitTypes - defaultUnitType)
+    List<Map> getAllUnitTypes() {
+        unitTypeService.findAll()
     }
 
     @ModelAttribute("allCategories")
-    List<SpendCategory> populateSpendCategories() {
-        log.debug("In populateSpendCategories()")
-        List<SpendCategory> allSpendCategories = spendCategoryService.findAll().sort { it.name }
-        SpendCategory defaultSpendCategory = allSpendCategories.find { it.isDefault }
-        [defaultSpendCategory] + (allSpendCategories - defaultSpendCategory)
+    List<Map> getAllSpendCategories() {
+        spendCategoryService.findAll()
     }
 
     @ModelAttribute("allStores")
-    List<Establishment> populateEstablishments() {
-        log.debug("In populateEstablishments()")
-        establishmentService.findAll().sort {a, b -> a.name <=> b.name ?: a.zipCode <=> b.zipCode }
-    }
-
-    @ModelAttribute("allStoreVisitsInfo")
-    Map populateEstablishmentVisits(final ModelMap model) {
-        ViewConfigInput viewConfigInput = model.getAttribute("displayMonthYear")
-        if (!viewConfigInput) {
-            viewConfigInput = new ViewConfigInput()
-        }
-        viewConfigInput.displayMonthYear = viewConfigInput.displayMonthYear ?: new SimpleDateFormat('yyyy-MM').format(new Date())
-        log.debug("In populateEstablishmentVisits() for ${viewConfigInput.displayMonthYear}")
-        establishmentVisitService.getMonthlySpendInfo(viewConfigInput.displayMonthYear)
+    List<Map> getAllEstablishments() {
+        establishmentService.findAll()
     }
 
     @ModelAttribute("displayMonthYear")
-    ViewConfigInput getDisplayMonthYear(final ModelMap model) {
-        ViewConfigInput viewConfigInput = model.getAttribute("displayMonthYear")
+    static ViewConfigInput getDisplayMonthYear(final ModelMap model) {
+        ViewConfigInput viewConfigInput = model.getAttribute("displayMonthYear") as ViewConfigInput
         log.trace("In getDisplayMonthYear() with viewConfigInput ${viewConfigInput}")
         if (!viewConfigInput) {
             viewConfigInput = new ViewConfigInput()
@@ -116,20 +94,48 @@ class JournalEntryMgrController {
     String setDisplayMonthYear(final ViewConfigInput viewConfigInput, final BindingResult bindingResult, final ModelMap model) {
         log.trace("Entered setDisplayMonthYear() with displayMonthYear ${viewConfigInput}")
         model.addAttribute("displayMonthYear", viewConfigInput)
-        List<EstablishmentVisit> visits = establishmentVisitService.findAll(viewConfigInput.displayMonthYear).sort { a, b -> -a.visitDate.time <=> -b.visitDate.time ?: -a.id <=> -b.id }
+        List<Map> visits = establishmentVisitService.findAll(viewConfigInput.displayMonthYear)
         model.addAttribute("allStoreVisits", visits)
         EstablishmentVisit visit = new EstablishmentVisit(visitDate: new SimpleDateFormat('yyyy-MM').parse(viewConfigInput.displayMonthYear), journalEntries: [new JournalEntry(quantity: 1.0)])
         model.addAttribute("establishmentVisit", visit)
         "all-entries-mgr"
     }
 
+    @ModelAttribute("allStoreVisitsInfo")
+    Map getMonthlySpendInfo(final ModelMap model) {
+        ViewConfigInput viewConfigInput = model.getAttribute("displayMonthYear") as ViewConfigInput
+        if (!viewConfigInput) {
+            viewConfigInput = new ViewConfigInput()
+        }
+        viewConfigInput.displayMonthYear = viewConfigInput.displayMonthYear ?: new SimpleDateFormat('yyyy-MM').format(new Date())
+        log.debug("In getMonthlySpendInfo() for ${viewConfigInput.displayMonthYear}")
+        establishmentVisitService.getMonthlySpendInfo(viewConfigInput.displayMonthYear)
+    }
+
     @RequestMapping(value=["/", "/all-entries-mgr"], method=RequestMethod.GET)
-    String showEstablishmentVisits(final EstablishmentVisit establishmentVisit) {
+    static String showEstablishmentVisits(final EstablishmentVisit establishmentVisit) {
         log.trace("Entered showEstablishmentVisits(establishmentVisit=${establishmentVisit})")
         establishmentVisit.visitDate = new Date()
         if (establishmentVisit.journalEntries == null) {
             establishmentVisit.journalEntries = [new JournalEntry(quantity: 1.0)]
         }
+        "all-entries-mgr"
+    }
+
+    @RequestMapping(value="/all-entries-mgr", params=["addItem"], method=RequestMethod.POST)
+    String addJournalEntry(final EstablishmentVisit establishmentVisit, final BindingResult bindingResult) {
+        log.trace("Entered addJournalEntry(establishmentVisit=${establishmentVisit}, bindingResult=${bindingResult})")
+        establishmentVisit.journalEntries.add(new JournalEntry(quantity: 1.0))
+        log.trace("Added journalEntry row to establishmentVisit)")
+        "all-entries-mgr"
+    }
+
+    @RequestMapping(value="/all-entries-mgr", params=["removeItem"], method=RequestMethod.POST)
+    String removeJournalEntry(final EstablishmentVisit establishmentVisit, final BindingResult bindingResult, final HttpServletRequest req) {
+        log.trace("Entered removeJournalEntry(establishmentVisit=${establishmentVisit}, bindingResult=${bindingResult})")
+        Integer rowNum = Integer.valueOf(req.getParameter('removeItem'))
+        establishmentVisit.journalEntries.remove(rowNum)
+        log.trace("Remvoved journalEntry row # ${rowNum} from establishmentVisit)")
         "all-entries-mgr"
     }
 
@@ -148,22 +154,5 @@ class JournalEntryMgrController {
             model.clear()
             "redirect:/all-entries-mgr"
         }
-    }
-
-    @RequestMapping(value="/all-entries-mgr", params=["addItem"], method=RequestMethod.POST)
-    String addJournalEntry(final EstablishmentVisit establishmentVisit, final BindingResult bindingResult) {
-        log.trace("Entered addJournalEntry(establishmentVisit=${establishmentVisit}, bindingResult=${bindingResult})")
-        establishmentVisit.journalEntries.add(new JournalEntry(quantity: 1.0))
-        log.trace("Added journalEntry row to establishmentVisit)")
-        "all-entries-mgr"
-    }
-
-    @RequestMapping(value="/all-entries-mgr", params=["removeItem"], method=RequestMethod.POST)
-    String removeJournalEntry(final EstablishmentVisit establishmentVisit, final BindingResult bindingResult, final HttpServletRequest req) {
-        log.trace("Entered removeJournalEntry(establishmentVisit=${establishmentVisit}, bindingResult=${bindingResult})")
-        Integer rowNum = Integer.valueOf(req.getParameter('removeItem'))
-        establishmentVisit.journalEntries.remove(rowNum)
-        log.trace("Remvoved journalEntry row # ${rowNum} from establishmentVisit)")
-        "all-entries-mgr"
     }
 }
