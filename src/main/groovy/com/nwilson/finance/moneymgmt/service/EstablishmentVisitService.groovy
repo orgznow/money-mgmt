@@ -1,8 +1,11 @@
 package com.nwilson.finance.moneymgmt.service
 
 import com.nwilson.finance.moneymgmt.FinanceConverter
+import com.nwilson.finance.moneymgmt.controller.cmd.EstablishmentVisitCmd
 import com.nwilson.finance.moneymgmt.dao.EstablishmentVisitRepository
+import com.nwilson.finance.moneymgmt.entity.Establishment
 import com.nwilson.finance.moneymgmt.entity.EstablishmentVisit
+import com.nwilson.finance.moneymgmt.entity.TransactionType
 import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -17,6 +20,15 @@ class EstablishmentVisitService {
 
     @Autowired
     EstablishmentVisitRepository establishmentVisitRepository
+
+    @Autowired
+    EstablishmentService establishmentService
+
+    @Autowired
+    TransactionTypeService transactionTypeService
+
+    @Autowired
+    JournalEntryService journalEntryService
 
     Map getMonthlySpendInfo(String displayMonthYear) {
         toMonthlySpendInfo(findAll(displayMonthYear))
@@ -64,7 +76,7 @@ class EstablishmentVisitService {
             totalMonthlySpendToDate: totalMonthlySpendToDate, weeklySpendTotals: weeklySpendTotals, weeklySpendByCategories: weeklySpendByCategories,
             weeklySpendByTxTypes: weeklySpendByTxTypes, allStoreVisits: storeVisits
         ]
-        log.debug("Returning storeVisitsInfo as ${storeVisitsInfo}")
+        log.trace("Returning storeVisitsInfo as ${storeVisitsInfo}")
         storeVisitsInfo
     }
 
@@ -86,7 +98,7 @@ class EstablishmentVisitService {
             //weeklySpendByCategories << ["Week${weekNbr}" as String: sortedSpendByCategory]
             weeklySpendByCategories.put("Week${weekNbr}" as String, sortedSpendByCategory)
         }
-        log.debug("weeklySpendByCategories=${weeklySpendByCategories.sort()}")
+        log.trace("weeklySpendByCategories=${weeklySpendByCategories.sort()}")
         weeklySpendByCategories.sort()
     }
 
@@ -110,18 +122,17 @@ class EstablishmentVisitService {
             weeklySpendByTxTypes.put("Week${weekNbr}" as String, sortedSpendByTxType)
         }
         weeklySpendByTxTypes = weeklySpendByTxTypes.sort()
-        log.debug("weeklySpendByTxTypes=${weeklySpendByTxTypes}")
+        log.trace("weeklySpendByTxTypes=${weeklySpendByTxTypes}")
         weeklySpendByTxTypes
     }
 
-    EstablishmentVisit save(EstablishmentVisit theStoreVisit) {
-        theStoreVisit.taxPercentage = theStoreVisit.taxPercentage ?: 0.0d
-        theStoreVisit.journalEntries.each {
-            it.entryDate = theStoreVisit.visitDate
-            it.establishmentVisit = theStoreVisit
-            it.taxAmount = (it.isTaxable) ? (it.taxAmount ?: 0.0d) : 0.0d
-            it.tipAmount = it.tipAmount ?: 0.0d
-        }
-        establishmentVisitRepository.save(theStoreVisit)
+    EstablishmentVisit save(EstablishmentVisitCmd theStoreVisit) {
+        log.info("Entered save with theStoreVisit as ${theStoreVisit}")
+        EstablishmentVisit theVisit = (theStoreVisit.id) ? establishmentVisitRepository.findById(theStoreVisit.id).get() : new EstablishmentVisit()
+        Establishment theStore = establishmentService.getById(theStoreVisit.establishmentId)
+        TransactionType theTxType = transactionTypeService.getById(theStoreVisit.transactionTypeId)
+        theVisit = establishmentVisitRepository.save(theVisit.toStoreVisit(theStoreVisit, theStore, theTxType))
+        journalEntryService.saveAll(theStoreVisit.journalEntries, theVisit.journalEntries ?: [], theVisit)
+        theVisit
     }
 }

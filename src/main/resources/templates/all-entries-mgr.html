@@ -42,15 +42,15 @@
                         </div>
 
                         <div class="col-md-3 p-2">
-                            <label th:for="establishment">Store</label>
-                            <select th:field="*{establishment}">
+                            <label th:for="establishmentId">Store</label>
+                            <select th:field="*{establishmentId}">
                                 <option th:each="store: ${allStores}" th:value="${store.id}" th:text="${store.name}"/>
                             </select>
                         </div>
 
                         <div class="col-md-2 col-md-offset-3 p-2">
-                            <label th:for="transactionType">Tx Type</label>
-                            <select th:field="*{transactionType}">
+                            <label th:for="transactionTypeId">Tx Type</label>
+                            <select th:field="*{transactionTypeId}">
                                 <option th:each="txType: ${allTxTypes}" th:value="${txType.id}" th:selected="${txType.isDefault == true}" th:text="${txType.name}"/>
                             </select>
                         </div>
@@ -110,7 +110,7 @@
                                     <input type="number" step="0.01" min="0.01" max="99" value="1.0" th:field="*{journalEntries[__${itemStat.index}__].quantity}"/>
                                 </td>
                                 <td>
-                                    <select th:field="*{journalEntries[__${itemStat.index}__].unitType}">
+                                    <select th:field="*{journalEntries[__${itemStat.index}__].unitTypeId}">
                                         <option th:each="unitType : ${allUnitTypes}" th:value="${unitType.id}" th:text="${unitType.name}" th:selected="${unitType.isDefault}"/>
                                     </select>
                                 </td>
@@ -136,7 +136,7 @@
                                     <input type="text" size="10" th:field="*{journalEntries[__${itemStat.index}__].comments}"/>
                                 </td>
                                 <td>
-                                    <select th:field="*{journalEntries[__${itemStat.index}__].spendCategory}" onfocusout="onCategoryLoseFocus(this)">
+                                    <select th:field="*{journalEntries[__${itemStat.index}__].spendCategoryId}" onfocusout="onCategoryLoseFocus(this)">
                                         <option th:each="categoryType : ${allCategories}" th:value="${categoryType.id}" th:text="${categoryType.name}" th:selected="${categoryType.isDefault}"/>
                                     </select>
                                 </td>

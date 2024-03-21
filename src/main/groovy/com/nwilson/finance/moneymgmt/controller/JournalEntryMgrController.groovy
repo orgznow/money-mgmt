@@ -1,11 +1,7 @@
 package com.nwilson.finance.moneymgmt.controller
 
-import com.nwilson.finance.moneymgmt.entity.Establishment
-import com.nwilson.finance.moneymgmt.entity.EstablishmentVisit
-import com.nwilson.finance.moneymgmt.entity.JournalEntry
-import com.nwilson.finance.moneymgmt.entity.SpendCategory
-import com.nwilson.finance.moneymgmt.entity.TransactionType
-import com.nwilson.finance.moneymgmt.entity.UnitType
+import com.nwilson.finance.moneymgmt.controller.cmd.EstablishmentVisitCmd
+import com.nwilson.finance.moneymgmt.controller.cmd.JournalEntryCmd
 import com.nwilson.finance.moneymgmt.input.ViewConfigInput
 import com.nwilson.finance.moneymgmt.service.EstablishmentService
 import com.nwilson.finance.moneymgmt.service.EstablishmentVisitService
@@ -15,14 +11,17 @@ import com.nwilson.finance.moneymgmt.service.TransactionTypeService
 import com.nwilson.finance.moneymgmt.service.UnitTypeService
 import groovy.util.logging.Slf4j
 import jakarta.servlet.http.HttpServletRequest
+import jakarta.validation.Valid
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Controller
+import org.springframework.ui.Model
 import org.springframework.ui.ModelMap
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.ModelAttribute
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RequestParam
@@ -96,7 +95,11 @@ class JournalEntryMgrController {
         model.addAttribute("displayMonthYear", viewConfigInput)
         List<Map> visits = establishmentVisitService.findAll(viewConfigInput.displayMonthYear)
         model.addAttribute("allStoreVisits", visits)
-        EstablishmentVisit visit = new EstablishmentVisit(visitDate: new SimpleDateFormat('yyyy-MM').parse(viewConfigInput.displayMonthYear), journalEntries: [new JournalEntry(quantity: 1.0)])
+        EstablishmentVisitCmd visit = new EstablishmentVisitCmd(
+            visitDate: new SimpleDateFormat('yyyy-MM').parse(viewConfigInput.displayMonthYear),
+            journalEntries: [new JournalEntryCmd(quantity: 1.0)]
+        )
+        log.debug("In setDisplayMonthYear ... visit is ${visit}")
         model.addAttribute("establishmentVisit", visit)
         "all-entries-mgr"
     }
@@ -113,34 +116,38 @@ class JournalEntryMgrController {
     }
 
     @RequestMapping(value=["/", "/all-entries-mgr"], method=RequestMethod.GET)
-    static String showEstablishmentVisits(final EstablishmentVisit establishmentVisit) {
-        log.trace("Entered showEstablishmentVisits(establishmentVisit=${establishmentVisit})")
+    static String showEstablishmentVisits(final EstablishmentVisitCmd establishmentVisit, final Model model, final BindingResult bindingResult) {
+        log.trace("Entered showEstablishmentVisits(establishmentVisit=${establishmentVisit}), bindingResult=${bindingResult}")
         establishmentVisit.visitDate = new Date()
         if (establishmentVisit.journalEntries == null) {
-            establishmentVisit.journalEntries = [new JournalEntry(quantity: 1.0)]
+            establishmentVisit.journalEntries = [new JournalEntryCmd(quantity: 1.0)]
         }
+        log.trace("In showEstablishmentVisits(establishmentVisit after initialization=${establishmentVisit})")
+        model.addAttribute("establishmentVisit", establishmentVisit)
         "all-entries-mgr"
     }
 
     @RequestMapping(value="/all-entries-mgr", params=["addItem"], method=RequestMethod.POST)
-    String addJournalEntry(final EstablishmentVisit establishmentVisit, final BindingResult bindingResult) {
+    String addJournalEntry(final EstablishmentVisitCmd establishmentVisit, final Model model, final BindingResult bindingResult) {
         log.trace("Entered addJournalEntry(establishmentVisit=${establishmentVisit}, bindingResult=${bindingResult})")
-        establishmentVisit.journalEntries.add(new JournalEntry(quantity: 1.0))
+        establishmentVisit.journalEntries.add(new JournalEntryCmd(quantity: 1.0))
         log.trace("Added journalEntry row to establishmentVisit)")
+        model.addAttribute("establishmentVisit", establishmentVisit)
         "all-entries-mgr"
     }
 
     @RequestMapping(value="/all-entries-mgr", params=["removeItem"], method=RequestMethod.POST)
-    String removeJournalEntry(final EstablishmentVisit establishmentVisit, final BindingResult bindingResult, final HttpServletRequest req) {
+    String removeJournalEntry(/*@RequestBody*/ final EstablishmentVisitCmd establishmentVisit, final BindingResult bindingResult, final Model model, final HttpServletRequest req) {
         log.trace("Entered removeJournalEntry(establishmentVisit=${establishmentVisit}, bindingResult=${bindingResult})")
         Integer rowNum = Integer.valueOf(req.getParameter('removeItem'))
         establishmentVisit.journalEntries.remove(rowNum)
-        log.trace("Remvoved journalEntry row # ${rowNum} from establishmentVisit)")
+        log.trace("Removed journalEntry row # ${rowNum} from establishmentVisit)")
+        model.addAttribute("establishmentVisit", establishmentVisit)
         "all-entries-mgr"
     }
 
     @RequestMapping(value="/all-entries-mgr", params=["save"], method=RequestMethod.POST)
-    String saveEstablishmentVisit(final EstablishmentVisit establishmentVisit, final BindingResult bindingResult, final ModelMap model) {
+    String saveEstablishmentVisit(/*@RequestBody*/ @Valid final EstablishmentVisitCmd establishmentVisit, final BindingResult bindingResult, final ModelMap model) {
         log.trace("Entered saveEstablishmentVisit(establishmentVisit=${establishmentVisit}, bindingResult=${bindingResult}, model=${model})")
         if (bindingResult.hasErrors()) {
             log.error("bindingResult.hasErrors=true")

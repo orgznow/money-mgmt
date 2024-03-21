@@ -24,4 +24,13 @@ class SpendCategoryService {
     SpendCategory save(SpendCategory entry) {
         spendCategoryRepository.save(entry)
     }
+
+    SpendCategory getCachedOrPersistentSpendCategory(Integer spendCategoryId, Map<Integer, SpendCategory> spendCategoryByIdMap) {
+        SpendCategory spendCategory = spendCategoryByIdMap[(spendCategoryId)]
+        if (!spendCategory) {
+            spendCategory = spendCategoryRepository.findById(spendCategoryId).get()
+            spendCategoryByIdMap[(spendCategoryId)] = spendCategory
+        }
+        spendCategory
+    }
 }

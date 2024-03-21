@@ -34,9 +34,9 @@ update category set name='Groceries - Frozen Prep.', description='Groceries - Fr
 
 delete from journal_entry where journal_entry_id in (1587)
 
-delete from journal_entry where establishment_visit_id in (1402)
+delete from journal_entry where establishment_visit_id in (1702)
 
-delete from establishment_visit where establishment_visit_id in (1402)
+delete from establishment_visit where establishment_visit_id in (1702)
 
 select * from establishment_visit vst where vst.description like '%Basic%'
 

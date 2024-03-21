@@ -13,7 +13,7 @@ where 		extract(YEAR_MONTH from visit.visit_date) = extract(YEAR_MONTH from now(
 order by	visit.establishment_visit_id desc, entry.journal_entry_id desc; 	
 
 -- All transaction details
-select 		visit.establishment_visit_id, visit.description, visit.comments, visit.tax_percentage, visit.visit_total_amount,
+select 		visit.establishment_visit_id, visit.visit_date, visit.description, visit.comments, visit.tax_percentage, visit.visit_total_amount,
 			entry.journal_entry_id ID, entry.entry_date purchase_dt, entry.description description, entry.rate_amount, entry.quantity, unit_typ.name unit,
             entry.is_taxable is_taxable, entry.tax_amount tax_amount, entry.tip_amount tip_amount, entry.final_amount final_amount, 
 			categ.name category, entry.comments comments, store.name store_name, tx_typ.name tx_type

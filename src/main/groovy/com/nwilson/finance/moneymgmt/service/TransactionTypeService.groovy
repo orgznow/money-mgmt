@@ -12,6 +12,10 @@ class TransactionTypeService {
     @Autowired
     TransactionTypeRepository transactionTypeRepository
 
+    TransactionType getById(Integer id) {
+        transactionTypeRepository.findById(id).get()
+    }
+
     List<Map> findAll() {
         List<Map> allTxTypes = transactionTypeRepository.findAll().collect {
             FinanceConverter.toTransactionType(it)

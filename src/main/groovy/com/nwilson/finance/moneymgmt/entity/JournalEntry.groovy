@@ -1,5 +1,6 @@
 package com.nwilson.finance.moneymgmt.entity
 
+import com.nwilson.finance.moneymgmt.controller.cmd.JournalEntryCmd
 import groovy.transform.ToString
 import groovy.transform.TupleConstructor
 import jakarta.persistence.Column
@@ -78,5 +79,23 @@ class JournalEntry {
 
     String getEntryDateString() {
         DATE_FORMATTER.format(this.entryDate)
+    }
+
+    JournalEntry toJournalEntry(JournalEntryCmd theEntry, EstablishmentVisit theVisit, SpendCategory theCategory, UnitType theUnitType) {
+        this.entryDate = theVisit.visitDate
+        this.description = theEntry.description
+        this.rateAmount = theEntry.rateAmount
+        this.quantity = theEntry.quantity
+        this.baseAmount = theEntry.baseAmount
+        this.discountAmount = theEntry.discountAmount
+        this.isTaxable = theEntry.isTaxable
+        this.taxAmount = (this.isTaxable) ? (theEntry.taxAmount ?: 0.0d) : 0.0d
+        this.tipAmount = theEntry.tipAmount ?: 0.0d
+        this.finalAmount = theEntry.finalAmount
+        this.comments = theEntry.comments
+        this.establishmentVisit = theVisit
+        this.spendCategory = theCategory
+        this.unitType = theUnitType
+        this
     }
 }

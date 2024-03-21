@@ -2,6 +2,7 @@ package com.nwilson.finance.moneymgmt.service
 
 import com.nwilson.finance.moneymgmt.FinanceConverter
 import com.nwilson.finance.moneymgmt.dao.UnitTypeRepository
+import com.nwilson.finance.moneymgmt.entity.SpendCategory
 import com.nwilson.finance.moneymgmt.entity.UnitType
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -22,5 +23,14 @@ class UnitTypeService {
 
     UnitType save(UnitType entry) {
         unitTypeRepository.save(entry)
+    }
+
+    UnitType getCachedOrPersistentUnitType(Integer unitTypeId, Map<Integer, UnitType> unitTypeByIdMap) {
+        UnitType unitType = unitTypeByIdMap[(unitTypeId)]
+        if (!unitType) {
+            unitType = unitTypeRepository.findById(unitTypeId).get()
+            unitTypeByIdMap[(unitTypeId)] = unitType
+        }
+        unitType
     }
 }

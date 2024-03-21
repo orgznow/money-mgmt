@@ -12,6 +12,10 @@ class EstablishmentService {
     @Autowired
     EstablishmentRepository establishmentRepository
 
+    Establishment getById(Integer id) {
+        establishmentRepository.findById(id).get()
+    }
+
     List<Map> findAll() {
         establishmentRepository.findAll().collect {
             FinanceConverter.toEstablishmentMap(it)

@@ -1,5 +1,6 @@
 package com.nwilson.finance.moneymgmt.entity
 
+import com.nwilson.finance.moneymgmt.controller.cmd.EstablishmentVisitCmd
 import jakarta.persistence.*
 import org.springframework.format.annotation.DateTimeFormat
 
@@ -51,5 +52,16 @@ class EstablishmentVisit {
 
     String getFormattedComments() {
         this.comments ? " - ${this.comments}" : ""
+    }
+
+    EstablishmentVisit toStoreVisit(EstablishmentVisitCmd theVisit, Establishment theStore, TransactionType theTxType) {
+        this.visitDate = theVisit.visitDate
+        this.description = theVisit.description
+        this.visitTotalAmount = theVisit.visitTotalAmount
+        this.taxPercentage = theVisit.taxPercentage ?: 0.0
+        this.comments = theVisit.comments
+        this.establishment = theStore
+        this.transactionType = theTxType
+        this
     }
 }

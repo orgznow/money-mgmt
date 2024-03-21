@@ -10,7 +10,7 @@
         <appender-ref ref="CONSOLE" />
         <appender-ref ref="FILE" />
     </root>
-    <logger name="com.nwilson.finance.moneymgmt" level="TRACE" />
+    <logger name="com.nwilson.finance.moneymgmt" level="INFO" />
     <!--logger name="org.apache" level="TRACE" /-->
     <logger name="org.springframework" level="WARN" />
     <!--logger name="org.springframework.web" level="TRACE" /-->
