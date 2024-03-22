@@ -75,7 +75,7 @@
 
                     </div>
 
-                    <!-- Row 3:: Table for line item entries for establishment/store visit:
+                    <!-- Row 3:: Table for line item entries for establishment/store visit with final grand total row:
                             Description, Rate, Qty, Unit Type, Base Amt, Discount Amt, Tax?, Tax Amt, Tip Amt, Final Amt, Comments, Category, (Button)
                     -->
                     <div class="row g-2 table-responsive">
@@ -96,7 +96,7 @@
                                 <th>Comments</th>
                                 <th>Category</th>
                                 <th>
-                                    <button type="submit" id="addItemBtn" name="addItem" class="btn-lg">Add Item</button>
+                                    <button type="submit" id="addItemBtn" name="addItem" class="btn-lg" onfocusout="onAddItemBtnOutFocus(this)">Add Item</button>
                                 </th>
                             </tr>
                             </thead>
@@ -104,10 +104,14 @@
                             <tr class="journalEntriesRow" th:each="item, itemStat : *{journalEntries}">
                                 <td th:text="${itemStat.count}"/>
                                 <td>
-                                    <input type="text" size="18" th:field="*{journalEntries[__${itemStat.index}__].description}" onfocusin="onItemDescriptionInFocus(this)"/>
+                                    <input type="text" size="18" th:field="*{journalEntries[__${itemStat.index}__].description}"
+                                        onfocusin="onItemDescriptionInFocus(this)"
+                                    />
                                 </td>
                                 <td>
-                                    <input type="number" step="0.01" min="-99999.99" max="99999.99" value="0.0" th:field="*{journalEntries[__${itemStat.index}__].rateAmount}" onfocusin="onItemRateInFocus(this)"/>
+                                    <input type="number" step="0.01" min="-99999.99" max="99999.99" value="0.0" th:field="*{journalEntries[__${itemStat.index}__].rateAmount}"
+                                        onfocusin="onItemRateInFocus(this)"
+                                    />
                                 </td>
                                 <td>
                                     <input type="number" step="0.01" min="0.01" max="99" value="1.0" th:field="*{journalEntries[__${itemStat.index}__].quantity}"/>
@@ -118,7 +122,9 @@
                                     </select>
                                 </td>
                                 <td>
-                                    <input type="number" step="0.01" min="-99999" max="99999.99" value="0.0" th:field="*{journalEntries[__${itemStat.index}__].baseAmount}" onfocusin="onItemBaseAmountInFocus(this)"/>
+                                    <input type="number" step="0.01" min="-99999" max="99999.99" value="0.0" th:field="*{journalEntries[__${itemStat.index}__].baseAmount}"
+                                        onfocusin="onItemBaseAmountInFocus(this)"
+                                    />
                                 </td>
                                 <td>
                                     <input type="number" step="0.01" min="-99999" max="99999" value="0.0" th:field="*{journalEntries[__${itemStat.index}__].discountAmount}"/>
@@ -127,13 +133,17 @@
                                     <input type="checkbox" th:field="*{journalEntries[__${itemStat.index}__].isTaxable}"/>
                                 </td>
                                 <td>
-                                    <input type="number" step="0.01" min="-999" max="999" value="0.0" th:field="*{journalEntries[__${itemStat.index}__].taxAmount}" onfocusin="onItemTaxAmountInFocus(this)"/>
+                                    <input type="number" step="0.01" min="-999" max="999" value="0.0" th:field="*{journalEntries[__${itemStat.index}__].taxAmount}"
+                                        onfocusin="onItemTaxAmountInFocus(this)"
+                                    />
                                 </td>
                                 <td>
                                     <input type="number" step="0.01" min="-999" max="999" value="0.0" th:field="*{journalEntries[__${itemStat.index}__].tipAmount}"/>
                                 </td>
                                 <td>
-                                    <input type="number" step="0.01" min="-99999" max="99999" value="0.0" th:field="*{journalEntries[__${itemStat.index}__].finalAmount}" onfocusin="onItemFinalAmountInFocus(this)"/>
+                                    <input type="number" step="0.01" min="-99999" max="99999" value="0.0" th:field="*{journalEntries[__${itemStat.index}__].finalAmount}"
+                                        class="journalEntriesFinalAmount" onfocusin="onItemFinalAmountInFocus(this)" onfocusout="onItemFinalAmountOutFocus(this)"
+                                    />
                                 </td>
                                 <td>
                                     <input type="text" size="10" th:field="*{journalEntries[__${itemStat.index}__].comments}"/>
@@ -147,6 +157,10 @@
                                     <button type="submit" name="removeItem" class="btn-lg" th:value="${itemStat.index}" >Delt Item</button>
                                 </td>
                             </tr>
+                            <tr>
+                                <td colspan="10" align="right">Grand Total</td>
+                                <td id="grandTotal"></td>
+                            </tr>
                             </tbody>
                         </table>
                     </div>
@@ -154,7 +168,7 @@
                     <!-- Row 4:: Submit button -->
                     <div class="row">
                         <div class="p-3 text-center">
-                            <button type="submit" name="save" class="col">Add Store Visit</button>
+                            <button type="submit" id="addStoreVisitBtn" name="save" class="col">Add Store Visit</button>
                         </div>
                     </div>
 
@@ -197,8 +211,8 @@
                 <summary>
                     <button type="button" class="btn btn-default" aria-label="Left Align">
                         <span class="glyphicon glyphicon-hand-down" aria-hidden="true"></span>
-                        <strong> Summary ... </strong>
-                        <em th:text="${allStoreVisitsInfo.weeklySpendTotals}"/>
+                        <strong> Summary (To Date) ... </strong>
+                        <em th:text="${allStoreVisitsInfo.toDateSummary}"/>
                     </button>
                 </summary>
 

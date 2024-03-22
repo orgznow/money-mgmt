@@ -53,7 +53,9 @@ class EstablishmentVisitService {
     }
 
     private static Map toMonthlySpendInfo(List<Map> storeVisits) {
-        List<Map> spendVisits = storeVisits - storeVisits.findAll { visit -> visit.journalEntries.any { je -> je.spendCategory.name == 'Income' } }
+        //TODO: Better way to detect income
+        List<Map> income = storeVisits.findAll { visit -> visit.journalEntries.any { je -> je.spendCategory.name == 'Income' } }
+        List<Map> spendVisits = storeVisits - income
         Map<Integer, List<Map>> storeVisitsByWeekOfMonth = spendVisits.groupBy {
             it.visitDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate().get(ChronoField.ALIGNED_WEEK_OF_MONTH)
         }.sort()
@@ -68,13 +70,19 @@ class EstablishmentVisitService {
         if (weeklySpendTotals != weeklySpendTotalsAlt) {
             log.error("weeklySpendTotals ${weeklySpendTotals} does not match weeklySpendTotalsAlt ${weeklySpendTotalsAlt}")
         }
-        BigDecimal totalMonthlySpendToDate = storeVisits.visitTotalAmount.sum() as BigDecimal
-        BigDecimal totalMonthlySpendToDateAlt = storeVisits.journalEntries.finalAmount.flatten().sum()
+        BigDecimal totalMonthlySpendToDate = spendVisits.visitTotalAmount.sum() as BigDecimal
+        BigDecimal totalMonthlySpendToDateAlt = spendVisits.journalEntries.finalAmount.flatten().sum()
+        BigDecimal totalMonthlyIncomeToDate = income.journalEntries.finalAmount.flatten().sum()
+        BigDecimal monthlyBalanceToDate = totalMonthlyIncomeToDate - totalMonthlySpendToDate
         if (totalMonthlySpendToDate != totalMonthlySpendToDateAlt) {
             log.error("totalMonthlySpendToDate ${totalMonthlySpendToDate} does not match totalMonthlySpendToDateAlt ${totalMonthlySpendToDateAlt}")
         }
         Map storeVisitsInfo = [
-            totalMonthlySpendToDate: totalMonthlySpendToDate, weeklySpendTotals: weeklySpendTotals, weeklySpendByCategories: weeklySpendByCategories,
+            toDateSummary: [
+                "Weekly Spend Totals": weeklySpendTotals, "Total Monthly Spend": totalMonthlySpendToDate, "Total Income": totalMonthlyIncomeToDate,
+                ((monthlyBalanceToDate < 0.0) ? "Deficit" : "Surplus") : monthlyBalanceToDate
+            ],
+            weeklySpendByCategories: weeklySpendByCategories,
             weeklySpendByTxTypes: weeklySpendByTxTypes, allStoreVisits: storeVisits
         ]
         log.trace("Returning storeVisitsInfo as ${storeVisitsInfo}")

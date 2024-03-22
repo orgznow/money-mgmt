@@ -97,7 +97,7 @@ class JournalEntryMgrController {
         model.addAttribute("allStoreVisits", visits)
         EstablishmentVisitCmd visit = new EstablishmentVisitCmd(
             visitDate: new SimpleDateFormat('yyyy-MM').parse(viewConfigInput.displayMonthYear),
-            journalEntries: [new JournalEntryCmd(quantity: 1.0)]
+            journalEntries: [new JournalEntryCmd(rateAmount: 0.0, quantity: 1.0)]
         )
         log.debug("In setDisplayMonthYear ... visit is ${visit}")
         model.addAttribute("establishmentVisit", visit)
@@ -120,7 +120,7 @@ class JournalEntryMgrController {
         log.trace("Entered showEstablishmentVisits(establishmentVisit=${establishmentVisit}), bindingResult=${bindingResult}")
         establishmentVisit.visitDate = new Date()
         if (establishmentVisit.journalEntries == null) {
-            establishmentVisit.journalEntries = [new JournalEntryCmd(quantity: 1.0)]
+            establishmentVisit.journalEntries = [new JournalEntryCmd(rateAmount: 0.0, quantity: 1.0)]
         }
         log.trace("In showEstablishmentVisits(establishmentVisit after initialization=${establishmentVisit})")
         model.addAttribute("establishmentVisit", establishmentVisit)
@@ -130,7 +130,7 @@ class JournalEntryMgrController {
     @RequestMapping(value="/all-entries-mgr", params=["addItem"], method=RequestMethod.POST)
     String addJournalEntry(final EstablishmentVisitCmd establishmentVisit, final Model model, final BindingResult bindingResult) {
         log.trace("Entered addJournalEntry(establishmentVisit=${establishmentVisit}, bindingResult=${bindingResult})")
-        establishmentVisit.journalEntries.add(new JournalEntryCmd(quantity: 1.0))
+        establishmentVisit.journalEntries.add(new JournalEntryCmd(rateAmount: 0.0, quantity: 1.0))
         log.trace("Added journalEntry row to establishmentVisit)")
         model.addAttribute("establishmentVisit", establishmentVisit)
         "all-entries-mgr"
