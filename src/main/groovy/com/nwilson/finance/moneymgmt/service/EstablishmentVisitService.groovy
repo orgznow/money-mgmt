@@ -53,7 +53,8 @@ class EstablishmentVisitService {
     }
 
     private static Map toMonthlySpendInfo(List<Map> storeVisits) {
-        Map<Integer, List<Map>> storeVisitsByWeekOfMonth = storeVisits.groupBy {
+        List<Map> spendVisits = storeVisits - storeVisits.findAll { visit -> visit.journalEntries.any { je -> je.spendCategory.name == 'Income' } }
+        Map<Integer, List<Map>> storeVisitsByWeekOfMonth = spendVisits.groupBy {
             it.visitDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate().get(ChronoField.ALIGNED_WEEK_OF_MONTH)
         }.sort()
         Map<String, Map<String, BigDecimal>> weeklySpendByCategories = toWeeklySpendByCategories(storeVisitsByWeekOfMonth)
