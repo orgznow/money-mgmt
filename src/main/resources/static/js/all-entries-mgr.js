@@ -1,5 +1,17 @@
-window.onload = function() {
-  document.getElementById("visitTotalAmount").focus();
+function onItemDescriptionInFocus(element) {
+    let elementRowIndex = Number(element.getAttribute("name").split("[").pop().split("]")[0]);
+    if (elementRowIndex === 0) {
+        let description = document.getElementById("description").value;
+        element.value = description;
+    }
+}
+
+function onItemRateInFocus(element) {
+    let elementRowIndex = Number(element.getAttribute("name").split("[").pop().split("]")[0]);
+    if (elementRowIndex === 0) {
+        let visitTotalAmount = parseFloat(document.getElementById("visitTotalAmount").value);
+        element.value = visitTotalAmount;
+    }
 }
 
 function onItemBaseAmountInFocus(element) {
