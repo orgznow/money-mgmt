@@ -6,7 +6,7 @@ $(document).ready(function(){
     setOnItemTaxAmountsInFocusHandler();
     setOnItemFinalAmountsInFocusHandler();
     setOnItemFinalAmountsLoseFocusHandler();
-    //setOnCategoryLoseFocusHandler();
+//    setOnCategoryLoseFocusHandler();
 });
 
 function setFocusToAppropriateElement() {
@@ -86,21 +86,31 @@ function onItemFinalAmountInFocus() {
     $(this).val(finalAmount);
 }
 
+//TODO: Move functionality to calculate taxAmount to a common method
+
 function setOnItemFinalAmountsLoseFocusHandler() {
     $(".journalEntriesFinalAmount").focusout(onItemFinalAmountLoseFocus);
 }
 
-function onItemFinalAmountLoseFocus(element) {
+function onItemFinalAmountLoseFocus() {
       var grandTotal = 0.0;
       $(".journalEntriesFinalAmount").each(function(){
         let rowFinalAmount = parseFloat($(this).val());
         grandTotal = grandTotal + rowFinalAmount;
       });
       $("#visitGrandTotal").text(grandTotal);
+      let visitTotalAmount = parseFloat($("#visitTotalAmount").val());
+      if (visitTotalAmount != grandTotal) {
+          $("#visitGrandTotal").css("border", "3px solid red");
+      } else {
+          $("#visitGrandTotal").css("border", "3px solid green");
+      }
+
 }
 
+//TODO: Move this functionality from javascript to jquery
 //function setOnCategoryLoseFocusHandler() {
-//    $(".journalEntriesSpendCategory").focus(onCategoryLoseFocus);
+//    $(".journalEntriesSpendCategory").focusout(onCategoryLoseFocus);
 //}
 //
 //function onCategoryLoseFocus() {
