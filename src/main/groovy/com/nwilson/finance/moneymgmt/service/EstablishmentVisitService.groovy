@@ -79,8 +79,14 @@ class EstablishmentVisitService {
         }
         Map storeVisitsInfo = [
             toDateSummary: [
-                "Weekly Spend Totals": weeklySpendTotals, "Total Monthly Spend": totalMonthlySpendToDate, "Total Income": totalMonthlyIncomeToDate,
-                ((monthlyBalanceToDate < 0.0) ? "Deficit" : "Surplus") : monthlyBalanceToDate
+                weeklySpendTotals: ["Weekly Spend Totals": weeklySpendTotals],
+                monthToDateTotals: [
+                    "To-Date Totals": [
+                        "Total Monthly Spend": totalMonthlySpendToDate,
+                        "Total Income": totalMonthlyIncomeToDate,
+                        ((monthlyBalanceToDate < 0.0) ? "Deficit" : "Surplus") : monthlyBalanceToDate
+                    ]
+                ]
             ],
             weeklySpendByCategories: weeklySpendByCategories,
             weeklySpendByTxTypes: weeklySpendByTxTypes, allStoreVisits: storeVisits

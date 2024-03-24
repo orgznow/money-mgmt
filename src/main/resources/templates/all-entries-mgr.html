@@ -201,7 +201,8 @@
                     <button type="button" class="btn btn-default" aria-label="Left Align">
                         <span class="glyphicon glyphicon-hand-down" aria-hidden="true"></span>
                         <strong> Summary (To Date) ... </strong>
-                        <em th:text="${allStoreVisitsInfo.toDateSummary}"/>
+                        <em th:text="${allStoreVisitsInfo.toDateSummary.weeklySpendTotals}"/>
+                        <em th:text="${allStoreVisitsInfo.toDateSummary.monthToDateTotals}"/>
                     </button>
                 </summary>
 
