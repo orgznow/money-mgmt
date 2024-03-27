@@ -1,5 +1,6 @@
 $(document).ready(function() {
     setFocusToAppropriateElement();
+    setVisitDescriptionInFocusHandler();
     setItemDescriptionsInFocusHandler();
     setItemRateAmountsInFocusHandler();
     setItemBaseAmountsInFocusHandler();
@@ -63,15 +64,32 @@ function setFocusToAppropriateElement() {
     }
 }
 
+function setVisitDescriptionInFocusHandler() {
+    $("#visitDescription").focus(onVisitDescriptionInFocus);
+}
+
+function onVisitDescriptionInFocus() {
+    let visitDate = $("#visitDate").val();
+    let visitedStore = $("#visitedStore option:selected").text();
+    let currentVisitDescription = $(this).val();
+    if (currentVisitDescription === "") {
+        let visitDescription = `${visitedStore} ${visitDate} Visit`;
+        $(this).val(visitDescription);
+    }
+}
+
 function setItemDescriptionsInFocusHandler() {
     $(".journalEntriesDescription").focus(onItemDescriptionInFocus);
 }
 
 function onItemDescriptionInFocus() {
     let numJournalEntryRows = determineJournalEntriesCount();
-    if (numJournalEntryRows === 1) {
-        let description = $("#visitDescription").val();
-        $(this).val(description);
+    if (numJournalEntryRows == 1) {
+        let currentDescription = $(this).val();
+        if (currentDescription === "") {
+            let visitDescription = $("#visitDescription").val();
+            $(this).val(visitDescription);
+        }
     }
 }
 
@@ -81,9 +99,12 @@ function setItemRateAmountsInFocusHandler() {
 
 function onItemRateAmountInFocus() {
     let numJournalEntryRows = determineJournalEntriesCount();
-    if (numJournalEntryRows === 1) {
-        let visitTotalAmount = parseFloat($("#visitTotalAmount").val());
-        $(this).val(visitTotalAmount);
+    if (numJournalEntryRows == 1) {
+        let currentRate = parseFloat($(this).val());
+        if (isNaN(currentRate) || (currentRate == 0.0)) {
+            let visitTotalAmount = parseFloat($("#visitTotalAmount").val());
+            $(this).val(visitTotalAmount);
+        }
     }
 }
 
@@ -128,6 +149,7 @@ function onItemFinalAmountLoseFocus() {
       let rowFinalAmount = parseFloat($(this).val());
       grandTotal = grandTotal + rowFinalAmount;
     });
+    grandTotal = grandTotal.toFixed(2);
     $("#visitGrandTotal").text(grandTotal);
     let visitTotalAmount = parseFloat($("#visitTotalAmount").val());
     if (visitTotalAmount != grandTotal) {

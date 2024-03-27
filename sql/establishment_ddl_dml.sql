@@ -109,6 +109,7 @@ insert into establishment values (93, 'O\'Connors Club 20', 'O\'Connors Club 20'
 insert into establishment values (94, 'Ledo\'s Tavern', 'Ledo\'s Tavern', 7.5, 43202);
 insert into establishment values (95, 'Cavan\'s Irish Pub', 'Cavan\'s Irish Pub', 7.5, 43207);
 insert into establishment values (96, 'Chik-Fil-A E Broad', 'Chik-Fil-A Market at East Broad', 7.5, 43213);
+insert into establishment values (97, 'Club Diversity', 'Club Diversity', 7.5, 43206);
 
 select * from establishment;
 
