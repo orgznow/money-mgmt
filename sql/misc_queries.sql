@@ -2,7 +2,7 @@ update 	establishment_visit vst
 set 	/*vst.visit_date = '2024-01-13',*/ vst.description = 'Axis 3/16/24 Visit' 
 where 	vst.establishment_visit_id in (1354)
 
-update establishment_visit vst set vst.visit_total_amount = 1167.68 where vst.establishment_visit_id in (876)
+update establishment_visit vst set vst.visit_total_amount = 14 where vst.establishment_visit_id in (2302)
 
 update establishment_visit vst set vst.visit_date = '2024-03-17' where vst.establishment_visit_id in (1358)
 
@@ -15,8 +15,13 @@ update establishment_visit vst set vst.description = 'Feb 2024 Paramount+/CBS Su
 update establishment_visit vst set vst.transaction_type_id = 1 where vst.establishment_visit_id in (1164)
 
 update 	journal_entry ent 
-set 	ent.rate_amount=10.98, ent.is_taxable='T', ent.tax_amount=0.82, ent.tip_amount=5.00, ent.final_amount=16.80, ent.comments='Eggs Benedict (Benny) + Coffee'
+set 	ent.rate_amount=10.98, ent.is_taxable='T', ent.tax_amount=0.82, ent.tip_amount=5.00, ent.final_amount=16.80, 
+		ent.comments='Eggs Benedict (Benny) + Coffee'
 where 	ent.journal_entry_id = 830
+
+update 	journal_entry ent 
+set 	ent.rate_amount=14, ent.base_amount=14, ent.final_amount=14
+where 	ent.journal_entry_id = 2802
 
 update 	journal_entry ent 
 set 	ent.comments=null
