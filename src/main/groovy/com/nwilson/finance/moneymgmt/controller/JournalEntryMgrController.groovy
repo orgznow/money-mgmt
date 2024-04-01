@@ -93,8 +93,8 @@ class JournalEntryMgrController {
     String setDisplayMonthYear(final ViewConfigInput viewConfigInput, final BindingResult bindingResult, final ModelMap model) {
         log.trace("Entered setDisplayMonthYear() with displayMonthYear ${viewConfigInput}")
         model.addAttribute("displayMonthYear", viewConfigInput)
-        List<Map> visits = establishmentVisitService.findAll(viewConfigInput.displayMonthYear)
-        model.addAttribute("allStoreVisits", visits)
+        Map monthlySpendInfo = establishmentVisitService.getMonthlySpendInfo(viewConfigInput.displayMonthYear)
+        model.addAttribute("allStoreVisitsInfo", monthlySpendInfo)
         EstablishmentVisitCmd visit = new EstablishmentVisitCmd(
             visitDate: new SimpleDateFormat('yyyy-MM').parse(viewConfigInput.displayMonthYear),
             journalEntries: [new JournalEntryCmd(rateAmount: 0.0, quantity: 1.0)]

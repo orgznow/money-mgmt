@@ -73,6 +73,9 @@ class EstablishmentVisitService {
         BigDecimal totalMonthlySpendToDate = spendVisits.visitTotalAmount.sum() as BigDecimal
         BigDecimal totalMonthlySpendToDateAlt = spendVisits.journalEntries.finalAmount.flatten().sum()
         BigDecimal totalMonthlyIncomeToDate = income.journalEntries.finalAmount.flatten().sum()
+        totalMonthlySpendToDate = totalMonthlySpendToDate ?: 0.0
+        totalMonthlySpendToDateAlt = totalMonthlySpendToDateAlt ?: 0.0
+        totalMonthlyIncomeToDate = totalMonthlyIncomeToDate ?: 0.0
         BigDecimal monthlyBalanceToDate = totalMonthlyIncomeToDate - totalMonthlySpendToDate
         if (totalMonthlySpendToDate != totalMonthlySpendToDateAlt) {
             log.error("totalMonthlySpendToDate ${totalMonthlySpendToDate} does not match totalMonthlySpendToDateAlt ${totalMonthlySpendToDateAlt}")
