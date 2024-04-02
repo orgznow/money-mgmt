@@ -62,11 +62,11 @@ class EstablishmentVisitService {
         Map<String, Map<String, BigDecimal>> weeklySpendByCategories = toWeeklySpendByCategories(storeVisitsByWeekOfMonth)
         Map<String, Map<String, BigDecimal>> weeklySpendByTxTypes = toWeeklySpendByTxTypes(storeVisitsByWeekOfMonth)
         List<Map<String, String>> weeklySpendTotals = weeklySpendByCategories.collect { k, v ->
-            [(k): "\$${v['Total'].toString()}" as String]
-        }
+            (k != "Running Total") ? [(k): "\$${v['Total'].toString()}" as String] : [:]
+        } - [:]
         List<Map<String, String>> weeklySpendTotalsAlt = weeklySpendByTxTypes.collect { k, v ->
-            [(k): "\$${v['Total'].toString()}" as String]
-        }
+            (k != "Running Total") ? [(k): "\$${v['Total'].toString()}" as String] : [:]
+        } - [:]
         if (weeklySpendTotals != weeklySpendTotalsAlt) {
             log.error("weeklySpendTotals ${weeklySpendTotals} does not match weeklySpendTotalsAlt ${weeklySpendTotalsAlt}")
         }
@@ -92,7 +92,8 @@ class EstablishmentVisitService {
                 ]
             ],
             weeklySpendByCategories: weeklySpendByCategories,
-            weeklySpendByTxTypes: weeklySpendByTxTypes, allStoreVisits: storeVisits
+            weeklySpendByTxTypes: weeklySpendByTxTypes,
+            allStoreVisits: storeVisits
         ]
         log.trace("Returning storeVisitsInfo as ${storeVisitsInfo}")
         storeVisitsInfo
@@ -100,6 +101,7 @@ class EstablishmentVisitService {
 
     private static Map<String, Map<String, BigDecimal>> toWeeklySpendByCategories(Map<Integer, List<Map>> storeVisitsByWeekOfMonth) {
         Map<String, Map<String, BigDecimal>> weeklySpendByCategories = [:]
+        Map<String, BigDecimal> totalSpendByCategories = [:]
         storeVisitsByWeekOfMonth.each {  weekNbr, weeklyStoreVisits ->
             List<Map> allWeeklyJournalEntries = weeklyStoreVisits*.journalEntries.flatten() as List<Map>
             log.trace("In week ${weekNbr} - all journal entry finalAmounts are: ${allWeeklyJournalEntries.finalAmount} with a total of ${allWeeklyJournalEntries.finalAmount.sum()}")
@@ -109,6 +111,8 @@ class EstablishmentVisitService {
                 BigDecimal totalWeeklySpendByCategory = journalEntries*.finalAmount.sum() as BigDecimal
                 log.trace("Total week ${weekNbr} spend by category ${category} is ${totalWeeklySpendByCategory}")
                 spendByCategory << [(category): totalWeeklySpendByCategory]
+                BigDecimal currentSpendByCategory = totalSpendByCategories[(category)]
+                totalSpendByCategories[(category)] = (currentSpendByCategory ?: 0.0) + totalWeeklySpendByCategory
             }
             Map<String, BigDecimal> sortedSpendByCategory = [:] + spendByCategory.sort()
             sortedSpendByCategory << [Total: allWeeklyJournalEntries.finalAmount.sum() as BigDecimal]
@@ -117,11 +121,12 @@ class EstablishmentVisitService {
             weeklySpendByCategories.put("Week${weekNbr}" as String, sortedSpendByCategory)
         }
         log.trace("weeklySpendByCategories=${weeklySpendByCategories.sort()}")
-        weeklySpendByCategories.sort()
+        [:] + weeklySpendByCategories.sort() + ["Running Total": totalSpendByCategories.sort()]
     }
 
     private static Map<String, Map<String, BigDecimal>> toWeeklySpendByTxTypes(Map<Integer, List<Map>> storeVisitsByWeekOfMonth) {
         Map<String, Map<String, BigDecimal>> weeklySpendByTxTypes = [:]
+        Map<String, BigDecimal> totalSpendByTxTypes = [:]
         storeVisitsByWeekOfMonth.each {  weekNbr, weeklyStoreVisits ->
             log.trace("In week ${weekNbr} - all visitTotalAmount are: ${weeklyStoreVisits.visitTotalAmount} with a total of ${weeklyStoreVisits.visitTotalAmount.sum()}")
             Map<String, List<Map>> weeklyVisitsByTxType = weeklyStoreVisits.groupBy { visit ->
@@ -132,6 +137,8 @@ class EstablishmentVisitService {
                 BigDecimal totalWeeklySpendByTxType = visits*.visitTotalAmount.flatten().sum() as BigDecimal
                 log.trace("Total week ${weekNbr} spend by txType ${txType} is ${totalWeeklySpendByTxType}")
                 spendByTxType << [(txType): totalWeeklySpendByTxType]
+                BigDecimal currentSpendByTxTypes = totalSpendByTxTypes[txType]
+                totalSpendByTxTypes[txType] = (currentSpendByTxTypes ?: 0.0) + totalWeeklySpendByTxType
             }
             Map<String, BigDecimal> sortedSpendByTxType = [:] + spendByTxType.sort()
             sortedSpendByTxType << [Total: weeklyStoreVisits.visitTotalAmount.sum()]
@@ -141,7 +148,7 @@ class EstablishmentVisitService {
         }
         weeklySpendByTxTypes = weeklySpendByTxTypes.sort()
         log.trace("weeklySpendByTxTypes=${weeklySpendByTxTypes}")
-        weeklySpendByTxTypes
+        [:] + weeklySpendByTxTypes + ["Running Total": totalSpendByTxTypes.sort()]
     }
 
     EstablishmentVisit save(EstablishmentVisitCmd theStoreVisit) {
