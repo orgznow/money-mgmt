@@ -73,6 +73,10 @@ insert into category values (58, 'Home Decor', 'Home Decor', 'T');
 insert into category values (59, 'Eat out - Parking', 'Eat out - Parking', 'F');
 insert into category values (60, 'Eat out - Tip', 'Eat out - Tip', 'F');
 insert into category values (61, 'Entertainment - Tip', 'Entertainment - Tip', 'F', false);
+insert into category values (62, 'Car Payment', 'Car Payment', 'F', false);
+insert into category values (63, 'Home Fee', 'Home Fee', 'F', false);
+insert into category values (64, 'Groceries - Herbs', 'Groceries - Herbs', 'F', false);
+insert into category values (65, 'Groceries - Spices', 'Groceries - Spices', 'F', false);
 
 select * from category;
 

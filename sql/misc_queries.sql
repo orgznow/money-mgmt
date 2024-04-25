@@ -1,8 +1,12 @@
 update 	establishment_visit vst 
-set 	/*vst.visit_date = '2024-01-13',*/ vst.description = 'Axis 3/16/24 Visit' 
-where 	vst.establishment_visit_id in (1354)
+set 	vst.visit_date = '2024-04-05'/*, vst.description = 'Axis 3/16/24 Visit' */
+where 	vst.establishment_visit_id in (2561)
 
-update establishment_visit vst set vst.visit_total_amount = 14 where vst.establishment_visit_id in (2302)
+update establishment_visit vst set vst.visit_total_amount = 7.20 where vst.establishment_visit_id in (2581)
+
+update 	journal_entry ent 
+set 	ent.rate_amount=7.20, ent.base_amount=7.20, ent.final_amount=7.20
+where 	ent.journal_entry_id = 3096
 
 update establishment_visit vst set vst.visit_date = '2024-03-17' where vst.establishment_visit_id in (1358)
 
@@ -35,13 +39,17 @@ update 	journal_entry ent
 set 	ent.description ='Jan 2024 Key HELOC Advance', ent.category_id = 55
 where 	ent.journal_entry_id = 1254
 
+update 	journal_entry ent 
+set 	ent.category_id = 62
+where 	ent.journal_entry_id in (1456, 1343, 986, 552)
+
 update category set name='Groceries - Frozen Prep.', description='Groceries - Frozen Prepared Foods' where category_id=37;
 
 delete from journal_entry where journal_entry_id in (1587)
 
-delete from journal_entry where establishment_visit_id in (1902, 1952, 2002, 2003)
+delete from journal_entry where establishment_visit_id in (2662)
 
-delete from establishment_visit where establishment_visit_id in (1902, 1952, 2002, 2003)
+delete from establishment_visit where establishment_visit_id in (2662)
 
 select * from establishment_visit vst where vst.description like '%Basic%'
 

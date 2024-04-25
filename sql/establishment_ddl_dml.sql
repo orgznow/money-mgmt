@@ -112,6 +112,13 @@ insert into establishment values (96, 'Chik-Fil-A E Broad', 'Chik-Fil-A Market a
 insert into establishment values (97, 'Club Diversity', 'Club Diversity', 7.5, 43206);
 insert into establishment values (98, 'Arctic Air', 'Arctic Air Service Now', 7.5, 43054);
 insert into establishment values (99, 'Romeo\'s Pizza', 'Romeo\'s Pizza Gahanna', 7.5, 43230);
+insert into establishment values (100, 'Lyft', 'Lyft', 0.0, null);
+insert into establishment values (101, 'COTA', 'Central Ohio Transport Authority', 0.0, null);
+insert into establishment values (102, 'Alamo CMH', 'Alamo Rental CMH Airport', 7.5, 43219);
+insert into establishment values (103, 'Sheraton Four Points', 'Four Points - Sheraton Hotels & Resorts', 0.0, null);
+insert into establishment values (104, 'Bob Evans', 'Bob Evans', 0.0, null);
+insert into establishment values (105, 'Aladdin\'s', 'Aladdin\'s', 0.0, null);
+insert into establishment values (106, 'Music Go Round', 'Music Go Round', 7.5, 43230);
 
 select * from establishment;
 

@@ -53,9 +53,10 @@ class EstablishmentVisitService {
     }
 
     private static Map toMonthlySpendInfo(List<Map> storeVisits) {
-        //TODO: Better way to detect income
-        List<Map> income = storeVisits.findAll { visit -> visit.journalEntries.any { je -> je.spendCategory.name == 'Income' } }
-        List<Map> spendVisits = storeVisits - income
+        //TODO: Better way to detect incomeVisits
+        List<Map> incomeVisits = storeVisits.findAll { visit -> visit.journalEntries.any { je -> je.spendCategory.name == 'Income' } }
+        List<Map> loanPaydownVisits = storeVisits.findAll { visit -> visit.journalEntries.any { je -> je.spendCategory.name == 'Loan Paydown' } }
+        List<Map> spendVisits = storeVisits - incomeVisits - loanPaydownVisits
         Map<Integer, List<Map>> storeVisitsByWeekOfMonth = spendVisits.groupBy {
             it.visitDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate().get(ChronoField.ALIGNED_WEEK_OF_MONTH)
         }.sort()
@@ -72,7 +73,7 @@ class EstablishmentVisitService {
         }
         BigDecimal totalMonthlySpendToDate = spendVisits.visitTotalAmount.sum() as BigDecimal
         BigDecimal totalMonthlySpendToDateAlt = spendVisits.journalEntries.finalAmount.flatten().sum()
-        BigDecimal totalMonthlyIncomeToDate = income.journalEntries.finalAmount.flatten().sum()
+        BigDecimal totalMonthlyIncomeToDate = incomeVisits.journalEntries.finalAmount.flatten().sum()
         totalMonthlySpendToDate = totalMonthlySpendToDate ?: 0.0
         totalMonthlySpendToDateAlt = totalMonthlySpendToDateAlt ?: 0.0
         totalMonthlyIncomeToDate = totalMonthlyIncomeToDate ?: 0.0
