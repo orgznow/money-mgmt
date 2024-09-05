@@ -77,6 +77,18 @@ insert into category values (62, 'Car Payment', 'Car Payment', 'F', false);
 insert into category values (63, 'Home Fee', 'Home Fee', 'F', false);
 insert into category values (64, 'Groceries - Herbs', 'Groceries - Herbs', 'F', false);
 insert into category values (65, 'Groceries - Spices', 'Groceries - Spices', 'F', false);
+insert into category values (66, 'Misc. - Tip', 'Miscellaneous - Tip', 'F', false);
+insert into category values (67, 'Entertainment - Rides', 'Entertainment - Rideshsare', 'F', false);
+insert into category values (68, 'Groceries - Dairy', 'Groceries - Dairy/Cheeses', 'F', false);
+insert into category values (69, 'Groceries - Meat', 'Groceries - Meat', 'F', false);
+insert into category values (70, 'Groceries - Vegetables', 'Groceries - Vegetables', 'F', false);
+insert into category values (71, 'Rideshare/Cab', 'Rideshare/Cab', 'F', false);
+insert into category values (72, 'Groceries - Seafood', 'Groceries - Seafood', 'F', false);
+insert into category values (73, 'Groceries - Bread/Grain', 'Groceries - Breads/Grains', 'F', false);
+insert into category values (74, 'Groceries - Coffee/Tea', 'Groceries - Coffee/Tea', 'F', false);
+insert into category values (75, 'Groceries - Fruit', 'Groceries - Fruit', 'F', false);
+insert into category values (76, 'Groceries - Prep. Meat', 'Groceries - Prepared Meat', 'F', false);
+insert into category values (77, 'Taxes & Fees', 'Taxes & Fees - Miscellaneous', 'F', false);
 
 select * from category;
 

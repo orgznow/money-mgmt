@@ -19,7 +19,7 @@ create table unit_type_seq (
 );
 
 insert into unit_type values (1, 'Count', 'Count of Items');
-insert into unit_type values (2, 'Volume', 'Fluid Ounces/Milliliters/Gallons/Liters etc.');
+insert into unit_type values (2, 'Volume - Gal', 'Volume - Gallons');
 insert into unit_type values (3, 'Weight - lb', 'Weight in pounds');
 insert into unit_type values (4, 'Miscellaneous', 'Miscellaneous/Unknown');
 insert into unit_type values (5, 'Count - Pks', 'Count of Packets');
@@ -35,6 +35,14 @@ insert into unit_type values (14, 'Count - Bunch', 'Count of Bunches');
 insert into unit_type values (15, 'Count - Tube', 'Count of Tubes');
 insert into unit_type values (16, 'Count - Cup', 'Count of Cups');
 insert into unit_type values (17, 'Count - Glass', 'Count of Glasses', false);
+insert into unit_type values (18, 'Count - Carton', 'Count of Cartons', false);
+insert into unit_type values (19, 'Count - Plate', 'Count of Plates', false);
+insert into unit_type values (20, 'Count - Bowl', 'Count of Bowls', false);
+insert into unit_type values (21, 'Count - Side', 'Count of Sides', false);
+insert into unit_type values (22, 'Count - Order', 'Count of Orders', false);
+insert into unit_type values (23, 'Count - Slice', 'Count of Slices', false);
+insert into unit_type values (24, 'Count - Jug', 'Count of Jugs', false);
+insert into unit_type values (25, 'Count - Loaf', 'Count of Loaves', false);
 
 select * from unit_type;
 

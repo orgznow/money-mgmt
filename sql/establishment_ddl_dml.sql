@@ -119,6 +119,33 @@ insert into establishment values (103, 'Sheraton Four Points', 'Four Points - Sh
 insert into establishment values (104, 'Bob Evans', 'Bob Evans', 0.0, null);
 insert into establishment values (105, 'Aladdin\'s', 'Aladdin\'s', 0.0, null);
 insert into establishment values (106, 'Music Go Round', 'Music Go Round', 7.5, 43230);
+insert into establishment values (107, 'Expedia', 'expedia.com', 7.5, null);
+insert into establishment values (108, 'Whitecastle', 'Whitecastle', 7.5, null);
+insert into establishment values (109, 'GoFundMe', 'GoFundMe.com', 7.5, null);
+insert into establishment values (110, 'Crate & Barrel', 'Crate & Barrel', 7.5, null);
+insert into establishment values (111, 'Venmo', 'Venmo', 0.0, null);
+insert into establishment values (112, 'Qatar Airways', 'Qatar Airways Airline', 0.0, null);
+insert into establishment values (113, 'American Airlines', 'American Airlines', 0.0, null);
+insert into establishment values (114, 'Jazeera Airways', 'Jazeera Airways', 0.0, null);
+insert into establishment values (115, 'British Airways', 'British Airways', 0.0, null);
+insert into establishment values (116, 'Short North Tavern', 'Short North Tavern', 7.5, null);
+insert into establishment values (117, 'District West', 'District West Night Club & Bar', 7.5, 43215);
+insert into establishment values (118, 'Pier 11', 'Pier 11', 7.5, 43230);
+insert into establishment values (119, 'Container Store', 'Container Store', 7.5, 43219);
+insert into establishment values (120, 'Mikey\'s Late Nite', 'Mikey\'s Late Night', 7.5, 43215);
+insert into establishment values (121, 'Walgreens', 'Walgreens', 7.5, null);
+insert into establishment values (122, 'Aldi', 'Aldi', 7.5, null);
+insert into establishment values (123, 'Uber', 'Uber', 0.0, null);
+insert into establishment values (124, 'DiBella\'s Subs', 'DiBella\'s Subs', 7.5, null);
+insert into establishment values (125, 'Whole Foods', 'Whole Foods', 7.5, 43219);
+insert into establishment values (126, 'Ohio BMV - Gahanna', 'Ohio BMV - Gahanna', 7.5, 43230);
+insert into establishment values (127, 'CMH Airport', 'CMH Airport', 7.5, 43219);
+insert into establishment values (128, 'AxisBank MG Rd BLR', 'AxisBank MG Rd BLR - NRI', 0.0, null);
+insert into establishment values (129, 'AxisBank Cmbrdg Lyt BLR', 'AxisBank Cmbrdg Lyt BLR - NRI', 0.0, null);
+insert into establishment values (130, 'City of Columbus', 'City of Columbus', 0.0, null);
+insert into establishment values (131, 'Budget CMH', 'Budget Rental CMH Airport', 7.5, 43219);
+insert into establishment values (132, 'Germain Nissan', 'Germain Nissan of Columbus', 7.5, 43230);
+insert into establishment values (133, 'Budget Stoneridge', 'Budget Rental Stoneridge Plaza', 7.5, 43230);
 
 select * from establishment;
 

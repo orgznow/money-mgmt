@@ -9,7 +9,7 @@ group = 'com.nwilson.finance'
 version = '0.0.1-SNAPSHOT'
 
 java {
-	sourceCompatibility = '17'
+	sourceCompatibility = '22'
 }
 
 repositories {

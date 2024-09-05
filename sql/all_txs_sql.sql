@@ -1,6 +1,6 @@
 -- All transactions details in current month/year
 select 		visit.establishment_visit_id, visit.visit_date, visit.description, visit.comments, visit.tax_percentage, visit.visit_total_amount,
-			entry.journal_entry_id ID, entry.entry_date purchase_dt, entry.description description, entry.rate_amount, entry.quantity, entry.base_amount,
+			entry.journal_entry_id ID, entry.entry_date purchase_dt, entry.description entry_description, entry.rate_amount, entry.quantity, entry.base_amount,
             unit_typ.name unit, entry.is_taxable is_taxable, entry.tax_amount tax_amount, entry.tip_amount tip_amount, entry.final_amount final_amount, 
 			categ.name category, entry.comments comments, store.name store_name, tx_typ.name tx_type
 from		establishment_visit visit
@@ -11,6 +11,26 @@ from		establishment_visit visit
 				inner join transaction_type tx_typ on visit.transaction_type_id = tx_typ.transaction_type_id
 where 		extract(YEAR_MONTH from visit.visit_date) = extract(YEAR_MONTH from now())               
 order by	visit.visit_date desc, visit.establishment_visit_id desc, entry.journal_entry_id desc; 	
+
+-- All transactions summaries in current month/year of a certain transaction type
+select 		visit.establishment_visit_id, visit.visit_date, visit.description, visit.comments, visit.tax_percentage, visit.visit_total_amount,
+			store.name store_name, tx_typ.name tx_type
+from		establishment_visit visit
+				inner join establishment store on visit.establishment_id = store.establishment_id
+				inner join transaction_type tx_typ on visit.transaction_type_id = tx_typ.transaction_type_id
+where 		extract(YEAR_MONTH from visit.visit_date) = extract(YEAR_MONTH from now())      
+			and
+            tx_typ.name = 'Cap One CC'
+order by	visit.visit_date desc, visit.establishment_visit_id desc; 
+
+-- Sum of all transactions in current month/year of a certain transaction type
+select 		sum(visit.visit_total_amount)
+from		establishment_visit visit
+				inner join establishment store on visit.establishment_id = store.establishment_id
+				inner join transaction_type tx_typ on visit.transaction_type_id = tx_typ.transaction_type_id
+where 		extract(YEAR_MONTH from visit.visit_date) = extract(YEAR_MONTH from now())      
+			and
+            tx_typ.name = 'Cap One CC';
 
 -- All transaction details
 select 		visit.establishment_visit_id, visit.visit_date, visit.description, visit.comments, visit.tax_percentage, visit.visit_total_amount,

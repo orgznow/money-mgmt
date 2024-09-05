@@ -26,6 +26,7 @@ insert into transaction_type values (11, 'Miscellaneous', 'Miscellaneous');
 insert into transaction_type values (12, 'Key Int', 'Key Interest');
 insert into transaction_type values (13, 'Gift Card', 'Gift Card');
 insert into transaction_type values (14, 'Check', 'Check');
+insert into transaction_type values (15, 'Key Venmo', 'Key Venmo', false);
 
 update transaction_type set name = 'Key DD', description = 'KeyBank Direct Deposit' where transaction_type_id = 4;
 

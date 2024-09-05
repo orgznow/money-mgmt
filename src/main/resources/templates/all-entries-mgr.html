@@ -95,7 +95,7 @@
                                 <th>Comments</th>
                                 <th>Category</th>
                                 <th>
-                                    <button type="submit" id="addItemBtn" name="addItem" class="btn-lg">Add Item</button>
+                                    <button type="submit" id="addItemBtn" name="addItem" class="btn-lg">Add</button>
                                 </th>
                             </tr>
                             </thead>
@@ -106,10 +106,10 @@
                                     <input type="text" class="journalEntriesDescription" size="18" th:field="*{journalEntries[__${itemStat.index}__].description}"/>
                                 </td>
                                 <td>
-                                    <input type="number" class="journalEntriesRate" step="0.01" min="-99999.99" max="99999.99" value="0.0" th:field="*{journalEntries[__${itemStat.index}__].rateAmount}"/>
+                                    <input type="number" class="journalEntriesRate" step="0.001" min="-99999.99" max="99999.99" value="0.0" th:field="*{journalEntries[__${itemStat.index}__].rateAmount}"/>
                                 </td>
                                 <td>
-                                    <input type="number" class="journalEntriesQuantity" step="0.01" min="0.01" max="99" value="1.0" th:field="*{journalEntries[__${itemStat.index}__].quantity}"/>
+                                    <input type="number" class="journalEntriesQuantity" step="0.001" min="0.001" max="99" value="1.0" th:field="*{journalEntries[__${itemStat.index}__].quantity}"/>
                                 </td>
                                 <td>
                                     <select th:field="*{journalEntries[__${itemStat.index}__].unitTypeId}">
@@ -143,7 +143,7 @@
                                     </select>
                                 </td>
                                 <td>
-                                    <button type="submit" name="removeItem" class="btn-lg" th:value="${itemStat.index}" >Delt Item</button>
+                                    <button type="submit" name="removeItem" class="btn-lg" th:value="${itemStat.index}" >Del</button>
                                 </td>
                             </tr>
                             <tr>
