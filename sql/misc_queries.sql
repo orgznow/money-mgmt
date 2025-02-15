@@ -1,28 +1,32 @@
 update 	establishment_visit vst 
-set 	vst.visit_date = '2024-08-08'/*, vst.description = 'Axis 3/16/24 Visit' */
-where 	vst.establishment_visit_id in (3403)
+set 	vst.visit_date = '2025-01-21'/*, vst.description = 'Axis 3/16/24 Visit' */
+where 	vst.establishment_visit_id in (4354)
 
 update establishment_visit vst set vst.visit_total_amount = 1000 where vst.establishment_visit_id in (3571)
 
 update 	journal_entry ent 
-set 	ent.rate_amount=2.52, ent.base_amount=2.52, ent.final_amount=2.52
-where 	ent.journal_entry_id = 3744
+set 	ent.rate_amount=1000, ent.base_amount=1000, ent.final_amount=1000
+where 	ent.journal_entry_id = 4552
 
 update 	journal_entry ent 
 set 	ent.comments = 'Get discount on previously purchased Pinky Tea Canister Drinking Glasses now on sale (see 5/28/24 Kroger Purchase)'
 where 	ent.establishment_visit_id = 2893
 
+update 	journal_entry ent 
+set 	ent.category_id = 29
+where 	ent.establishment_visit_id = 3979
+
 update establishment_visit vst set vst.visit_date = '2024-06-22' where vst.establishment_visit_id in (3053)
 
 update establishment_visit vst set vst.establishment_id = 39 where vst.establishment_visit_id in (3454)
 
-update establishment_visit vst set vst.description = 'Alamo Chicago Toll Passthru Fee', vst.comments = null where vst.establishment_visit_id in (2708)
+update establishment_visit vst set vst.description = 'Citibank Oct 2024 Credit Card Payment + Loan Paydown', vst.comments = null where vst.establishment_visit_id in (3965)
 
 update establishment_visit vst set vst.comments = 'Get discount on Pinky Tea Canister Drinking Glasses (see 5/28/24 Kroger Purchase)' where vst.establishment_visit_id in (2893)
 
 update establishment_visit vst set vst.description = 'Feb 2024 Paramount+/CBS Subscription', vst.establishment_id = 22 where vst.establishment_visit_id in (1099)
 
-update establishment_visit vst set vst.transaction_type_id = 1 where vst.establishment_visit_id in (3503)
+update establishment_visit vst set vst.transaction_type_id = 4 where vst.establishment_visit_id in (4170)
 
 update establishment_visit vst set vst.comments = 'Pride Week Festivities' where vst.establishment_visit_id in (3023)
 
@@ -59,9 +63,9 @@ update category set name='Groceries - Frozen Prep.', description='Groceries - Fr
 
 delete from journal_entry where journal_entry_id in (1587)
 
-delete from journal_entry where establishment_visit_id in (3565)
+delete from journal_entry where establishment_visit_id in (4248)
 
-delete from establishment_visit where establishment_visit_id in (3565)
+delete from establishment_visit where establishment_visit_id in (4248)
 
 select * from establishment_visit vst where vst.description like '%Basic%'
 

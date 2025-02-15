@@ -43,6 +43,13 @@ insert into unit_type values (22, 'Count - Order', 'Count of Orders', false);
 insert into unit_type values (23, 'Count - Slice', 'Count of Slices', false);
 insert into unit_type values (24, 'Count - Jug', 'Count of Jugs', false);
 insert into unit_type values (25, 'Count - Loaf', 'Count of Loaves', false);
+insert into unit_type values (26, 'Count - Bar', 'Count of Bars', false);
+insert into unit_type values (27, 'Count - Wedge', 'Count of Wedges', false);
+insert into unit_type values (28, 'Count - Wheel', 'Count of Wheels', false);
+insert into unit_type values (29, 'Count - Stick', 'Count of Sticks', false);
+insert into unit_type values (30, 'Count - Cnstr.', 'Count of Canisters', false);
+insert into unit_type values (31, 'Fraction - Split', 'Fraction of Splits', false);
+insert into unit_type values (32, 'Count - Block', 'Count of Blocks', false);
 
 select * from unit_type;
 

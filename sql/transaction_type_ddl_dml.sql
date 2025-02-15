@@ -3,12 +3,12 @@ use budget;
 
 drop table transaction_type;
 
- create table transaction_type (
+create table transaction_type (
 	transaction_type_id int,
     name varchar(50) not null, 
     description varchar(100), 
-    is_default boolean not null default false
-
+    is_default boolean not null default false,
+    
     primary key (transaction_type_id)
 );
 
@@ -27,6 +27,8 @@ insert into transaction_type values (12, 'Key Int', 'Key Interest');
 insert into transaction_type values (13, 'Gift Card', 'Gift Card');
 insert into transaction_type values (14, 'Check', 'Check');
 insert into transaction_type values (15, 'Key Venmo', 'Key Venmo', false);
+insert into transaction_type values (16, 'Key Credit', 'Key Credit', false);
+insert into transaction_type values (17, 'Key HELOC', 'Key Home Equity Line of Credit', false);
 
 update transaction_type set name = 'Key DD', description = 'KeyBank Direct Deposit' where transaction_type_id = 4;
 

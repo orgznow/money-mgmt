@@ -146,7 +146,24 @@ insert into establishment values (130, 'City of Columbus', 'City of Columbus', 0
 insert into establishment values (131, 'Budget CMH', 'Budget Rental CMH Airport', 7.5, 43219);
 insert into establishment values (132, 'Germain Nissan', 'Germain Nissan of Columbus', 7.5, 43230);
 insert into establishment values (133, 'Budget Stoneridge', 'Budget Rental Stoneridge Plaza', 7.5, 43230);
+insert into establishment values (134, 'We Got Meat', '\`We Got Meat\' Meat Store', 7.5, 43017);
+insert into establishment values (135, 'Jasmine Fusion Grille', 'Jasmine Fusion Grille', 7.5, 43017);
+insert into establishment values (136, 'ChargePoint', 'ChargePoint', 0.00, null);
+insert into establishment values (137, 'District 13', 'District 13 Gastropub Sunbury, OH', 7.0, 43074);
+insert into establishment values (138, 'Antonio\'s Pizza', 'Antonio\'s Pizza Brunswick, OH', 6.75, 43074);
+insert into establishment values (139, 'Zelle', 'Zelle', 0.00, null);
+insert into establishment values (140, 'Marshall\'s Gahanna', 'Marshall\'s Gahanna', 7.5, 43230);
+insert into establishment values (141, 'Donato\'s Airport', 'Donato\'s CMH Airport', 7.5, 43219);
+insert into establishment values (142, 'DC Metro', 'DC Metro', 0.0, null);
+insert into establishment values (143, 'UPS Gahanna', 'UPS Store Gahanna', 7.50, 43230);
+insert into establishment values (144, 'Kitchen Social', 'Kitchen Social - Dublin', 7.50, 43065);
+insert into establishment values (145, 'Cinemark', 'Cinemark', 7.50, null);
+insert into establishment values (146, 'CVS Gahanna', 'CVS Gahanna', 7.50, 43230);
+insert into establishment values (147, 'El Vaquero', 'El Vaquero Gahanna', 7.50, 43230);
+insert into establishment values (148, 'Planet Fitness', 'Planet Fitness Gahanna', 7.50, 43230);
 
 select * from establishment;
+
+update establishment set name = 'Donato\'s CMH Airport' where establishment_id = 141
 
 

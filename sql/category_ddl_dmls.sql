@@ -88,7 +88,15 @@ insert into category values (73, 'Groceries - Bread/Grain', 'Groceries - Breads/
 insert into category values (74, 'Groceries - Coffee/Tea', 'Groceries - Coffee/Tea', 'F', false);
 insert into category values (75, 'Groceries - Fruit', 'Groceries - Fruit', 'F', false);
 insert into category values (76, 'Groceries - Prep. Meat', 'Groceries - Prepared Meat', 'F', false);
-insert into category values (77, 'Taxes & Fees', 'Taxes & Fees - Miscellaneous', 'F', false);
+insert into category values (77, 'Fees & Surcharges', 'Fees & Surcharges - Miscellaneous', 'F', false);
+insert into category values (78, 'Groceries - Nuts', 'Groceries - Nuts', 'T', false);
+insert into category values (79, 'Groceries - Lentils/Beans', 'Groceries - Lentils/Beans', 'T', false);
+insert into category values (80, 'Groceries - Oils', 'Groceries - Oils', 'T', false);
+insert into category values (81, 'Groceries - Bakery', 'Groceries - Bakery', 'T', false);
+insert into category values (82, 'Car - Charging', 'Car - Charging', 'F', false);
+insert into category values (83, 'Groceries - Eggs', 'Groceries - Eggs', 'F', false);
+insert into category values (84, 'Groceries - Prep. Veg.', 'Groceries - Prepared Vegetarian', 'F', false);
+insert into category values (85, 'Home Entertainment', 'Home Entertainment', 'F', false);
 
 select * from category;
 
